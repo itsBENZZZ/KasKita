@@ -61,7 +61,6 @@
 <div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3">
 <p class="text-xs font-semibold">👥 Yang Lagi Online (<span id="onlineCount">0</span>)</p>
 <div id="onlineList" class="flex flex-wrap gap-1.5 mt-2"></div>
-<p class="text-[8px] text-zinc-500 mt-2">Live - siapa buka link langsung muncul disini</p>
 </div>
 <div id="toast" style="position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#1DB99A;color:#000;padding:8px 16px;border-radius:99px;font-size:11px;font-weight:700;display:none;z-index:9999;"></div>
 <div id="pinModal" class="fixed inset-0 bg-black flex items-center justify-center p-4 z-[70]"><div class="bg-[#1E2E2A] border border-[#2a3d35] rounded-2xl p-5 w-full max-w-[300px] text-center"><p class="text-sm font-bold">🔒 KasKita Terkunci</p><p class="text-[10px] text-zinc-400 mt-1">Masukkan PIN untuk masuk</p><input id="pinInput" type="password" inputmode="numeric" placeholder="PIN" class="w-full mt-3 bg-black border border-[#2a3d35] rounded-xl px-3 py-3 text-center text-lg tracking-[0.5em]"><p id="pinError" class="text-[10px] text-red-400 mt-2 hidden">HAYO SIAH SALAH!</p><button id="pinOkBtn" class="w-full mt-3 bg-[#1DB99A] text-black font-bold py-2.5 rounded-xl text-xs">Buka</button></div></div>
@@ -81,11 +80,15 @@ const db = firebase.database();
 const kasRef = db.ref('kaskita/94mahasiswa');
 const presenceRef = db.ref('kaskita/presence');
 const connectedRef = db.ref('.info/connected');
+const devicesRef = db.ref('kaskita/devices');
+let deviceId = localStorage.getItem('kaskita_device_id');
+if(!deviceId){deviceId='dev_'+Math.random().toString(36).slice(2)+Date.now().toString(36);localStorage.setItem('kaskita_device_id',deviceId);}
+devicesRef.child(deviceId).on('value',(snap)=>{let d=snap.val();if(d&&d.blacklisted){document.body.innerHTML='<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0F1A14;color:#fff;font-family:Poppins;padding:20px;text-align:center"><div><h1 style="font-size:24px;font-weight:bold;color:#ef4444">🚫 AKSES DIBLOKIR</h1><p style="margin-top:10px;font-size:13px;color:#999">Device kamu di blacklist sama Beben</p><p style="margin-top:5px;font-size:10px;color:#555">ID: '+deviceId+'</p><p style="margin-top:10px;font-size:11px">Hubungi Beben buat dibuka</p></div></div>';}});
+function registerDevice(name){devicesRef.child(deviceId).set({name:name||'UNKNOWN',lastSeen:Date.now(),ua:navigator.userAgent.slice(0,120),blacklisted:false});devicesRef.child(deviceId).onDisconnect().update({lastSeen:Date.now()});}
+setInterval(()=>{if(myName) devicesRef.child(deviceId).update({lastSeen:Date.now(),name:myName});},30000);
 
-// === PIN LOGIC ===
 const CORRECT_PIN = "12344321";
 let pinPassed = localStorage.getItem('kaskita_pin_ok') === 'true';
-
 function checkPin(){
   if(pinPassed){
     document.getElementById('pinModal').style.display='none';
@@ -94,7 +97,6 @@ function checkPin(){
     document.getElementById('namaModal').style.display='none';
   }
 }
-
 document.getElementById('pinOkBtn').onclick=()=>{
   let p = document.getElementById('pinInput').value.trim();
   if(p === CORRECT_PIN){
@@ -113,26 +115,23 @@ document.getElementById('pinOkBtn').onclick=()=>{
   }
 };
 document.getElementById('pinInput').onkeydown=(e)=>{ if(e.key==='Enter') document.getElementById('pinOkBtn').click(); };
-
 checkPin();
 
-// === PRESENCE LOGIC - SIAPA ONLINE ===
 let myPresenceRef = null;
 let myName = localStorage.getItem('kaskita_nama') || '';
-
 function setupPresence(name){
   myName = name;
   localStorage.setItem('kaskita_nama', name);
+  registerDevice(name);
   document.getElementById('namaModal').style.display='none';
   connectedRef.on('value', (snap)=>{
     if(snap.val() === true){
       myPresenceRef = presenceRef.push();
-      myPresenceRef.set({name: name, time: Date.now()});
+      myPresenceRef.set({name: name, time: Date.now(), deviceId: deviceId});
       myPresenceRef.onDisconnect().remove();
     }
   });
 }
-
 if(pinPassed){
   if(myName){
     document.getElementById('namaModal').style.display='none';
@@ -141,14 +140,12 @@ if(pinPassed){
     document.getElementById('namaModal').style.display='flex';
   }
 }
-
 document.getElementById('namaOkBtn').onclick=()=>{
   let n = document.getElementById('namaInput').value.trim();
   if(!n) return alert('Isi nama dulu ta!');
   setupPresence(n.toUpperCase());
 };
 document.getElementById('namaInput').onkeydown=(e)=>{ if(e.key==='Enter') document.getElementById('namaOkBtn').click(); };
-
 presenceRef.on('value', (snap)=>{
   let data = snap.val() || {};
   let names = Object.values(data).map(v=>v.name);
@@ -184,8 +181,6 @@ kasRef.on('value',(snap)=>{
   if(!data){
     kasRef.set({anggota:DEFAULT_94,bayar:{},keluarData:{},nominalData:{},updatedAt:Date.now()});
     document.getElementById('liveDot').textContent='🟢 Live';
-    document.getElementById('liveDot').style.background='#1DB99A';
-    document.getElementById('liveDot').style.color='#000';
     return;
   }
   isSyncing=true;
@@ -194,47 +189,17 @@ kasRef.on('value',(snap)=>{
   keluarData=data.keluarData||{};
   nominalData=data.nominalData||{};
   document.getElementById('liveDot').textContent='🟢 Live Terhubung';
-  document.getElementById('liveDot').style.background='#1DB99A';
-  document.getElementById('liveDot').style.color='#000';
   render();
   isSyncing=false;
 });
-kasRef.on('child_changed',()=>{
-  showToast('🔄 Update dari bendahara lain!');
-});
+kasRef.on('child_changed',()=>{showToast('🔄 Update dari bendahara lain!');});
 function fmtB(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}function parseB(s){let[y,m]=s.split('-').map(Number);return new Date(y,m-1,1)}function namaB(d){return d.toLocaleDateString('id-ID',{month:'short',year:'numeric'})}function getNom(){return nominalData[curBulan]||10000}
 function getMasukForMonth(k){let b=bayar[k]||{};if(Object.keys(b).length===0) return 0;let nom=nominalData[k]||10000;return Object.keys(b).length*nom;}
 function getKeluarForMonth(k){return (keluarData[k]||[]).reduce((s,e)=>s+e.nom,0)}
-function getSaldoAwal(){
-  let total=0;
-  let d=new Date(2026,9,1);
-  let cur=parseB(curBulan);
-  while(d < cur){
-    let k=fmtB(d);
-    total += getMasukForMonth(k) - getKeluarForMonth(k);
-    d.setMonth(d.getMonth()+1);
-  }
-  return Math.max(0,total);
-}
-function getTotalAll(){
-  let totalMasuk=0,totalKeluar=0;
-  let d=new Date(2026,9,1);
-  let end=new Date(2035,11,1);
-  while(d <= end){
-    let k=fmtB(d);
-    totalMasuk += getMasukForMonth(k);
-    totalKeluar += getKeluarForMonth(k);
-    d.setMonth(d.getMonth()+1);
-  }
-  return {totalMasuk,totalKeluar,totalSisa:totalMasuk-totalKeluar};
-}
+function getSaldoAwal(){let total=0;let d=new Date(2026,9,1);let cur=parseB(curBulan);while(d < cur){let k=fmtB(d);total += getMasukForMonth(k) - getKeluarForMonth(k);d.setMonth(d.getMonth()+1);}return Math.max(0,total);}
+function getTotalAll(){let totalMasuk=0,totalKeluar=0;let d=new Date(2026,9,1);let end=new Date(2035,11,1);while(d <= end){let k=fmtB(d);totalMasuk += getMasukForMonth(k);totalKeluar += getKeluarForMonth(k);d.setMonth(d.getMonth()+1);}return {totalMasuk,totalKeluar,totalSisa:totalMasuk-totalKeluar};}
 let sel=document.getElementById('bulan');
-for(let y=2026;y<=2035;y++){
-  let startM = (y===2026)?9:0;
-  for(let m=startM;m<12;m++){
-    let d=new Date(y,m,1);let v=fmtB(d);let o=document.createElement('option');o.value=v;o.textContent=namaB(d);if(v==curBulan)o.selected=true;sel.appendChild(o)
-  }
-}
+for(let y=2026;y<=2035;y++){let startM = (y===2026)?9:0;for(let m=startM;m<12;m++){let d=new Date(y,m,1);let v=fmtB(d);let o=document.createElement('option');o.value=v;o.textContent=namaB(d);if(v==curBulan)o.selected=true;sel.appendChild(o)}}
 sel.onchange=e=>{curBulan=e.target.value;render()};
 function statusBayar(n){return(bayar[curBulan]||{})[n]||'Belum'}function listKeluar(){return keluarData[curBulan]||[]}
 function renderAnggota(){let q=(document.getElementById('cari').value||'').toLowerCase();let f=document.getElementById('filter').value;let list=document.getElementById('aList');list.innerHTML='';let sudah=[],belum=[];anggota.forEach(n=>{ if(statusBayar(n)=='Belum') belum.push(n); else sudah.push(n); });document.getElementById('sudahCount').textContent=sudah.length;document.getElementById('belumCount').textContent=belum.length;document.getElementById('sudahList').textContent=sudah.join(', ')||'-';document.getElementById('belumList').textContent=belum.join(', ')||'-';anggota.filter(n=>n.toLowerCase().includes(q)).filter(n=>{let s=statusBayar(n);if(f=='Semua')return true;return s==f}).forEach(n=>{let s=statusBayar(n);let div=document.createElement('div');div.className='flex items-center justify-between bg-black border border-[#2a3d35] rounded-xl px-3 py-2.5 gap-2';let left=document.createElement('div');left.className='flex items-center gap-2 min-w-0 flex-1';let nameSpan=document.createElement('span');nameSpan.className='text-xs font-medium truncate';nameSpan.textContent=n;let st=document.createElement('span');st.className='shrink-0 text-[8px] px-2 py-1 rounded-full '+(s=='Cash'?'bg-amber-400 text-black':s=='TF'?'bg-sky-400 text-black':'bg-zinc-700 text-zinc-300');st.textContent=s;left.appendChild(nameSpan);left.appendChild(st);let right=document.createElement('div');right.className='flex items-center gap-1 shrink-0';let bayarBtn=document.createElement('button');if(s!='Belum'){bayarBtn.className='w-7 h-7 flex items-center justify-center rounded-full bg-[#1DB99A] text-black font-bold text-[12px]';bayarBtn.textContent='✓';}else{bayarBtn.className='text-[10px] font-bold bg-[#1DB99A] text-black px-3 py-1.5 rounded-full';bayarBtn.textContent='Bayar';}bayarBtn.onclick=()=>{curNama=n;document.getElementById('modalNama').textContent=n;document.getElementById('modal').classList.remove('hidden');document.getElementById('modal').classList.add('flex')};let edit=document.createElement('button');edit.textContent='✏️';edit.className='text-[13px] px-1';edit.onclick=()=>{let baru=prompt('Edit nama "'+n+'":', n);if(!baru)return;baru=baru.trim().toUpperCase();if(!baru||baru===n)return;if(anggota.includes(baru))return alert('Udah ada!');for(let k in bayar){ if(bayar[k][n]){ bayar[k][baru]=bayar[k][n]; delete bayar[k][n]; } }anggota[anggota.indexOf(n)]=baru;anggota.sort((a,b)=>a.localeCompare(b));save();render();};let del=document.createElement('button');del.textContent='🗑️';del.className='text-[14px] px-1';del.onclick=()=>{if(confirm('Hapus '+n+'?')){anggota=anggota.filter(x=>x!=n);save();}};right.appendChild(bayarBtn);right.appendChild(edit);right.appendChild(del);div.appendChild(left);div.appendChild(right);list.appendChild(div);})}
