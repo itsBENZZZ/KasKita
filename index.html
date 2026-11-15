@@ -151,8 +151,7 @@ function render(){
 
   let chart=document.getElementById('chart'); chart.innerHTML='';
   for(let i=5;i>=0;i++){
-    let y=parseInt(k.split('-')[0]); let m=parseInt(k.split('-')[1])-1;
-    let d=new Date(y,m,1); d.setMonth(d.getMonth()-i);
+    let d=new Date(k+'-01T00:00:00'); d.setMonth(d.getMonth()-i);
     let key=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
     let v=pays[key]?Object.values(pays[key]):[]; let cash=v.filter(x=>x?.method==='cash').length; let tf=v.filter(x=>x?.method==='transfer').length;
     let exp=expenses.filter(e=>e.key===key).reduce((a,b)=>a+b.amount,0);
