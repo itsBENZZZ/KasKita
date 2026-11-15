@@ -3,57 +3,95 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>CatatKas ijon v3</title>
+<title>CatatKas ijon v4 - Fixed</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-<style>*{font-family:Poppins,sans-serif}</style>
+<style>
+*{font-family:Poppins,sans-serif; -webkit-tap-highlight-color:transparent}
+::-webkit-scrollbar{width:0}
+@media (orientation: landscape) and (max-height: 500px){
+  .landscape-grid{grid-template-columns: repeat(4, minmax(0,1fr));}
+}
+</style>
 </head>
-<body class="bg-[#0F1A14] text-white min-h-screen p-4">
-<div class="max-w-3xl mx-auto">
-<h1 class="text-2xl font-bold">CatatKas ijon</h1>
-<p class="text-zinc-400 text-sm mb-4">Catat kas tanpa drama - Bulanan Only</p>
+<body class="bg-[#0F1A14] text-white min-h-screen p-3 md:p-6">
+<div class="max-w-5xl mx-auto">
+  <!-- HEADER -->
+  <div class="flex justify-between items-center mb-4">
+    <div>
+      <h1 class="text-2xl md:text-3xl font-bold">CatatKas ijon</h1>
+      <p class="text-zinc-400 text-xs md:text-sm">Catat kas tanpa drama - Bulanan Only</p>
+    </div>
+    <div class="text-[10px] bg-[#1E2E2A] border border-zinc-800 px-3 py-1.5 rounded-full">v4 FIX</div>
+  </div>
 
-<div class="flex gap-2 mb-4">
-<select id="monthSelect" class="flex-1 bg-[#1E2E2A] border border-zinc-800 p-3 rounded-2xl text-sm"></select>
-<input id="nominal" type="number" value="10000" class="w-32 bg-[#1E2E2A] border border-zinc-800 p-3 rounded-2xl text-sm">
-</div>
+  <!-- CONTROLS -->
+  <div class="flex flex-col md:flex-row gap-2 mb-4">
+    <select id="monthSelect" class="flex-1 bg-[#1E2E2A] border border-zinc-800 p-3 rounded-2xl text-sm outline-none focus:border-[#1DB99A]"></select>
+    <div class="flex gap-2">
+      <div class="flex-1 md:w-40 relative">
+        <span class="absolute left-3 top-3.5 text-xs text-zinc-500">Rp</span>
+        <input id="nominal" type="number" value="10000" class="w-full bg-[#1E2E2A] border border-zinc-800 p-3 pl-8 rounded-2xl text-sm outline-none focus:border-[#1DB99A]">
+      </div>
+      <button onclick="render()" class="md:hidden bg-zinc-800 px-4 rounded-2xl text-xs">Refresh</button>
+    </div>
+  </div>
 
-<div class="grid grid-cols-2 gap-3 mb-4">
-<div class="bg-[#1E2E2A] p-4 rounded-2xl"><p class="text-xs text-zinc-400">Terkumpul</p><p id="total" class="font-bold text-lg text-[#1DB99A]">Rp 0</p></div>
-<div class="bg-[#1E2E2A] p-4 rounded-2xl"><p class="text-xs text-zinc-400">Sudah</p><p id="sudah" class="font-bold">0/0</p></div>
-<div class="bg-[#1E2E2A] p-4 rounded-2xl"><p class="text-xs text-zinc-400">Target</p><p id="target" class="font-bold">Rp 0</p></div>
-<div class="bg-[#1E2E2A] p-4 rounded-2xl"><p class="text-xs text-zinc-400">Periode</p><p id="periode" class="font-bold text-sm">-</p><div class="w-full bg-zinc-800 h-2 rounded-full mt-2"><div id="progress" class="bg-[#1DB99A] h-2 rounded-full" style="width:0%"></div></div></div>
-</div>
-  <div class="flex gap-2 mb-3">
-<input id="search" placeholder="Cari nama..." class="flex-1 bg-[#1E2E2A] border border-zinc-800 p-3 rounded-2xl text-sm">
-<button onclick="setFilter('all')" id="fAll" class="bg-[#1DB99A] px-4 py-2 rounded-full text-sm font-bold">Semua</button>
-<button onclick="setFilter('paid')" id="fPaid" class="bg-[#1E2E2A] px-4 py-2 rounded-full text-sm">Sudah</button>
-<button onclick="setFilter('unpaid')" id="fUnpaid" class="bg-[#1E2E2A] px-4 py-2 rounded-full text-sm">Belum</button>
-</div>
+  <!-- STATS - RESPONSIVE PORTRAIT/LANDSCAPE -->
+  <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4 landscape-grid">
+    <div class="bg-[#1E2E2A] p-4 rounded-2xl border border-zinc-800/50"><p class="text-[11px] text-zinc-400 uppercase tracking-wider">Terkumpul</p><p id="total" class="font-bold text-lg text-[#1DB99A] truncate">Rp 0</p></div>
+    <div class="bg-[#1E2E2A] p-4 rounded-2xl border border-zinc-800/50"><p class="text-[11px] text-zinc-400 uppercase tracking-wider">Sudah / Total</p><p id="sudah" class="font-bold text-lg">0/0</p></div>
+    <div class="bg-[#1E2E2A] p-4 rounded-2xl border border-zinc-800/50"><p class="text-[11px] text-zinc-400 uppercase tracking-wider">Target</p><p id="target" class="font-bold text-lg truncate">Rp 0</p></div>
+    <div class="bg-[#1E2E2A] p-4 rounded-2xl border border-zinc-800/50"><p class="text-[11px] text-zinc-400 uppercase tracking-wider">Periode</p><p id="periode" class="font-bold text-[13px] leading-tight">-</p><div class="w-full bg-zinc-800 h-2 rounded-full mt-2"><div id="progress" class="bg-[#1DB99A] h-2 rounded-full transition-all duration-500" style="width:0%"></div></div></div>
+  </div>
 
-<div class="bg-[#1E2E2A] p-4 rounded-2xl mb-4">
-<p class="font-bold mb-3">📊 Grafik 6 Bulan</p>
-<div id="chart" class="flex items-end gap-2 h-24"></div>
-<div class="flex items-center gap-3 mt-4"><div class="w-16 h-16 rounded-full flex items-center justify-center font-bold" id="donut" style="background:conic-gradient(#1DB99A 0%, #333 0%)">0%</div><p class="text-sm text-zinc-400" id="donutText">0% lunas bulan ini</p></div>
-</div>
+  <div class="grid md:grid-cols-[1.2fr_0.8fr] gap-3 mb-4">
+    <!-- CHART -->
+    <div class="bg-[#1E2E2A] p-4 rounded-2xl border border-zinc-800/50">
+      <p class="font-bold mb-3 text-sm">📊 Grafik 6 Bulan</p>
+      <div id="chart" class="flex items-end gap-2 h-24"></div>
+      <div class="flex items-center gap-3 mt-4">
+        <div class="w-14 h-14 rounded-full flex items-center justify-center font-bold text-sm shrink-0" id="donut" style="background:conic-gradient(#1DB99A 0%, #2a2a2a 0%)">0%</div>
+        <p class="text-xs text-zinc-400" id="donutText">0% lunas bulan ini</p>
+      </div>
+    </div>
 
-<div id="list" class="space-y-2 mb-4"></div>
+    <!-- REKAP TABLE -->
+    <div class="bg-[#1E2E2A] p-4 rounded-2xl border border-zinc-800/50 overflow-auto max-h-[220px]">
+      <p class="font-bold mb-3 text-sm">📋 Rekap Bulanan</p>
+      <table class="w-full text-xs">
+        <thead class="text-zinc-400 sticky top-0 bg-[#1E2E2A]"><tr><th class="text-left p-2">Bulan</th><th class="p-2">Sudah</th><th class="p-2">Belum</th><th class="p-2 text-right">Terkumpul</th></tr></thead>
+        <tbody id="rekap"></tbody>
+      </table>
+    </div>
+  </div>
 
-<div class="flex gap-2 mb-4">
-<input id="newName" placeholder="Nama baru..." class="flex-1 bg-[#1E2E2A] border border-zinc-800 p-3 rounded-2xl text-sm">
-<button onclick="addMember()" class="bg-[#1DB99A] px-5 py-3 rounded-2xl font-bold text-sm">+ Tambah</button>
-</div>
-  <div class="bg-[#1E2E2A] p-4 rounded-2xl mb-4 overflow-auto">
-<p class="font-bold mb-3">📋 Rekap Bulanan</p>
-<table class="w-full text-xs"><thead class="text-zinc-400"><tr><th class="text-left p-2">Bulan</th><th class="p-2">Sudah</th><th class="p-2">Belum</th><th class="p-2">Terkumpul</th></tr></thead><tbody id="rekap"></tbody></table>
-</div>
+  <!-- FILTER -->
+  <div class="flex flex-col sm:flex-row gap-2 mb-3">
+    <input id="search" placeholder="Cari nama..." class="flex-1 bg-[#1E2E2A] border border-zinc-800 p-3 rounded-2xl text-sm outline-none focus:border-[#1DB99A]">
+    <div class="flex gap-2 overflow-auto">
+      <button onclick="setFilter('all')" id="fAll" class="bg-[#1DB99A] px-5 py-2.5 rounded-full text-sm font-bold shrink-0 transition">Semua</button>
+      <button onclick="setFilter('paid')" id="fPaid" class="bg-[#1E2E2A] border border-zinc-800 px-5 py-2.5 rounded-full text-sm shrink-0 transition">Sudah</button>
+      <button onclick="setFilter('unpaid')" id="fUnpaid" class="bg-[#1E2E2A] border border-zinc-800 px-5 py-2.5 rounded-full text-sm shrink-0 transition">Belum</button>
+    </div>
+  </div>
 
-<div class="flex gap-2">
-<button onclick="exportJSON()" class="flex-1 bg-zinc-800 p-3 rounded-2xl text-xs">Download Backup</button>
-<label class="flex-1 bg-zinc-800 p-3 rounded-2xl text-xs text-center cursor-pointer"><input type="file" id="importFile" hidden onchange="importJSON(event)">Import Backup</label>
-<button onclick="exportWA()" class="flex-1 bg-[#1DB99A] p-3 rounded-2xl text-xs font-bold">Export WA</button>
-</div>
-<p class="text-[11px] text-zinc-500 mt-3 text-center">✅ Data auto-simpan di HP ini. Biar aman sampe 2045, Download Backup tiap bulan.</p>
+  <!-- LIST -->
+  <div id="list" class="space-y-2 mb-4"></div>
+
+  <!-- ADD MEMBER -->
+  <div class="flex gap-2 mb-5">
+    <input id="newName" placeholder="Nama baru (contoh: Rina)" class="flex-1 bg-[#1E2E2A] border border-zinc-800 p-3 rounded-2xl text-sm outline-none focus:border-[#1DB99A]">
+    <button onclick="addMember()" class="bg-[#1DB99A] hover:bg-[#19a88b] px-6 py-3 rounded-2xl font-bold text-sm transition">+ Tambah</button>
+  </div>
+
+  <!-- ACTIONS -->
+  <div class="grid grid-cols-3 gap-2 mb-3">
+    <button onclick="exportJSON()" class="bg-zinc-800 hover:bg-zinc-700 p-3 rounded-2xl text-[11px] md:text-xs transition">⬇️ Backup</button>
+    <label class="bg-zinc-800 hover:bg-zinc-700 p-3 rounded-2xl text-[11px] md:text-xs text-center cursor-pointer transition">⬆️ Import<input type="file" id="importFile" hidden accept=".json" onchange="importJSON(event)"></label>
+    <button onclick="exportWA()" class="bg-[#1DB99A] hover:bg-[#19a88b] p-3 rounded-2xl text-[11px] md:text-xs font-bold transition">📱 WA</button>
+  </div>
+  <p class="text-[10px] text-zinc-500 mt-2 text-center leading-relaxed">✅ Data auto-simpan di HP. Hapus anggota akan hapus riwayat bayarnya juga. Backup tiap bulan ya!</p>
 </div>
 
 <script>
@@ -61,19 +99,170 @@ const bulan=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus",
 let members=JSON.parse(localStorage.getItem('ck_members')||'[{"id":1,"name":"Alya"},{"id":2,"name":"Budi"},{"id":3,"name":"Citra"},{"id":4,"name":"Dito"},{"id":5,"name":"Eka"}]');
 let pays=JSON.parse(localStorage.getItem('ck_pays')||'{}');
 let filter='all';
+
 const sel=document.getElementById('monthSelect');
-for(let y=2023;y<=2045;y++) for(let m=0;m<12;m++){let v=`${y}-${String(m+1).padStart(2,'0')}`;let o=document.createElement('option');o.value=v;o.textContent=`${bulan[m]} ${y}`;if(v===new Date().toISOString().slice(0,7)) o.selected=true; sel.appendChild(o);}
-sel.onchange=render;
-document.getElementById('search').oninput=render;
+const nowKey=new Date().toISOString().slice(0,7);
+for(let y=2023;y<=2045;y++){
+  for(let m=0;m<12;m++){
+    let v=`${y}-${String(m+1).padStart(2,'0')}`;
+    let o=document.createElement('option');
+    o.value=v; o.textContent=`${bulan[m]} ${y}`;
+    if(v===nowKey) o.selected=true;
+    sel.appendChild(o);
+  }
+}
+sel.addEventListener('change', render);
+document.getElementById('search').addEventListener('input', render);
+document.getElementById('nominal').addEventListener('input', render);
+document.getElementById('newName').addEventListener('keydown', e=>{ if(e.key==='Enter') addMember(); });
+
 function save(){localStorage.setItem('ck_members',JSON.stringify(members));localStorage.setItem('ck_pays',JSON.stringify(pays));}
 function getKey(){return sel.value;}
-function addMember(){let n=document.getElementById('newName').value.trim();if(!n)return;members.push({id:Date.now(),name:n});document.getElementById('newName').value='';save();render();}
-function toggle(id){let k=getKey();if(!pays[k])pays[k]={};pays[k][id]=!pays[k][id]?{paid:true,date:new Date().toLocaleDateString('id-ID')}:null;if(!pays[k][id])delete pays[k][id];save();render();}
-function setFilter(f){filter=f;['fAll','fPaid','fUnpaid'].forEach(x=>document.getElementById(x).className='bg-[#1E2E2A] px-4 py-2 rounded-full text-sm');document.getElementById(f==='all'?'fAll':f==='paid'?'fPaid':'fUnpaid').className='bg-[#1DB99A] px-4 py-2 rounded-full text-sm font-bold';render();}
-function render(){let k=getKey();let nom=parseInt(document.getElementById('nominal').value)||0;let q=document.getElementById('search').value.toLowerCase();let paid=pays[k]||{};let list=members.filter(m=>m.name.toLowerCase().includes(q)).filter(m=>{if(filter==='paid')return paid[m.id]?.paid;if(filter==='unpaid')return !paid[m.id]?.paid;return true;});let sudah=Object.values(paid).filter(x=>x?.paid).length;let total=members.length;let terkumpul=sudah*nom;document.getElementById('total').textContent='Rp '+terkumpul.toLocaleString('id-ID');document.getElementById('sudah').textContent=sudah+'/'+total;document.getElementById('target').textContent='Rp '+(total*nom).toLocaleString('id-ID');document.getElementById('periode').textContent=sel.options[sel.selectedIndex].textContent;document.getElementById('progress').style.width=(total?(sudah/total*100):0)+'%';document.getElementById('list').innerHTML=list.map(m=>{let p=paid[m.id]?.paid;return `<div class="bg-[#1E2E2A] p-3 rounded-2xl flex justify-between items-center"><div class="flex gap-3 items-center"><div class="w-8 h-8 rounded-full bg-zinc-700 flex items-center justify-center text-xs font-bold">${m.name[0]}</div><div><p class="text-sm font-semibold">${m.name}</p><p class="text-[11px] text-zinc-500">${p?paid[m.id].date:'Belum bayar'}</p></div></div><button onclick="toggle(${m.id})" class="px-3 py-1.5 rounded-full text-xs font-bold ${p?'bg-[#1DB99A]':'bg-red-500/20 text-red-400'}">${p?'Sudah':'Belum'}</button></div>`}).join('');let perc=total?Math.round(sudah/total*100):0;document.getElementById('donut').style.background=`conic-gradient(#1DB99A ${perc}%, #333 ${perc}%)`;document.getElementById('donut').textContent=perc+'%';document.getElementById('donutText').textContent=perc+'% lunas bulan ini';let chart=document.getElementById('chart');chart.innerHTML='';for(let i=5;i>=0;i--){let d=new Date(sel.value+'-01');d.setMonth(d.getMonth()-i);let key=d.toISOString().slice(0,7);let s=pays[key]?Object.values(pays[key]).filter(x=>x?.paid).length:0;let h=(total? (s/total)*80+10:10);chart.innerHTML+=`<div class="flex-1 flex flex-col items-center gap-1"><div class="w-full bg-[#1DB99A] rounded-t-lg" style="height:${h}px"></div><span class="text-[10px] text-zinc-500">${bulan[d.getMonth()].slice(0,3)}</span></div>`;}let rekap=document.getElementById('rekap');rekap.innerHTML=Object.keys(pays).sort().reverse().slice(0,12).map(kk=>{let s=Object.values(pays[kk]).filter(x=>x?.paid).length;return `<tr class="border-t border-zinc-800"><td class="p-2">${kk}</td><td class="p-2 text-center text-[#1DB99A]">${s}</td><td class="p-2 text-center text-red-400">${total-s}</td><td class="p-2 text-right">Rp ${(s*nom).toLocaleString('id-ID')}</td></tr>`}).join('');}
-function exportJSON(){let blob=new Blob([JSON.stringify({members,pays},null,2)],{type:'application/json'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='catatkas-backup-'+getKey()+'.json';a.click();}
-function importJSON(e){let r=new FileReader();r.onload=ev=>{let d=JSON.parse(ev.target.result);members=d.members||members;pays=d.pays||pays;save();render();alert('Import berhasil!')};r.readAsText(e.target.files[0]);}
-function exportWA(){let k=getKey();let paid=pays[k]||{};let sudah=members.filter(m=>paid[m.id]?.paid).map(m=>m.name);let belum=members.filter(m=>!paid[m.id]?.paid).map(m=>m.name);let t=`CatatKas ${sel.options[sel.selectedIndex].textContent}\nSudah (${sudah.length}): ${sudah.join(', ')||'-'}\nBelum (${belum.length}): ${belum.join(', ')||'-'}\nTerkumpul: Rp ${(sudah.length*(parseInt(document.getElementById('nominal').value)||0)).toLocaleString('id-ID')}`;navigator.clipboard.writeText(t);alert('Tersalin! Paste ke WA');}
+function esc(s){return s.replace(/[&<>"]/g,c=>({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+
+function addMember(){
+  let el=document.getElementById('newName');
+  let n=el.value.trim();
+  if(!n) return alert('Nama gak boleh kosong ta!');
+  if(members.some(m=>m.name.toLowerCase()===n.toLowerCase())) return alert('Nama udah ada!');
+  members.push({id:Date.now(), name:n});
+  el.value=''; save(); render();
+}
+
+function deleteMember(id){
+  let m=members.find(x=>x.id===id);
+  if(!m) return;
+  if(!confirm(`Hapus ${m.name}? Riwayat bayarnya bakal ikut kehapus.`)) return;
+  members=members.filter(x=>x.id!==id);
+  Object.keys(pays).forEach(k=>{ if(pays[k] && pays[k][id]) delete pays[k][id]; });
+  save(); render();
+}
+
+function editMember(id){
+  let m=members.find(x=>x.id===id);
+  let baru=prompt('Ganti nama:', m.name);
+  if(baru===null) return;
+  baru=baru.trim();
+  if(!baru) return;
+  m.name=baru;
+  save(); render();
+}
+
+function toggle(id){
+  let k=getKey();
+  if(!pays[k]) pays[k]={};
+  if(pays[k][id]?.paid){
+    delete pays[k][id];
+  } else {
+    pays[k][id]={paid:true, date:new Date().toLocaleDateString('id-ID', {day:'2-digit', month:'short'})};
+  }
+  save(); render();
+}
+
+function setFilter(f){
+  filter=f;
+  const base='px-5 py-2.5 rounded-full text-sm shrink-0 transition border ';
+  document.getElementById('fAll').className=base+(f==='all'?'bg-[#1DB99A] border-[#1DB99A] font-bold':'bg-[#1E2E2A] border-zinc-800');
+  document.getElementById('fPaid').className=base+(f==='paid'?'bg-[#1DB99A] border-[#1DB99A] font-bold':'bg-[#1E2E2A] border-zinc-800');
+  document.getElementById('fUnpaid').className=base+(f==='unpaid'?'bg-[#1DB99A] border-[#1DB99A] font-bold':'bg-[#1E2E2A] border-zinc-800');
+  render();
+}
+
+function render(){
+  let k=getKey();
+  let nom=parseInt(document.getElementById('nominal').value)||0;
+  let q=document.getElementById('search').value.toLowerCase().trim();
+  let paid=pays[k]||{};
+  
+  let filtered=members.filter(m=>m.name.toLowerCase().includes(q));
+  let filteredByStatus=filtered.filter(m=>{
+    if(filter==='paid') return !!paid[m.id]?.paid;
+    if(filter==='unpaid') return !paid[m.id]?.paid;
+    return true;
+  });
+
+  let sudah=Object.values(paid).filter(x=>x?.paid).length;
+  let total=members.length;
+  let terkumpul=sudah*nom;
+
+  document.getElementById('total').textContent='Rp '+terkumpul.toLocaleString('id-ID');
+  document.getElementById('sudah').textContent=sudah+'/'+total;
+  document.getElementById('target').textContent='Rp '+(total*nom).toLocaleString('id-ID');
+  document.getElementById('periode').textContent=sel.options[sel.selectedIndex]?.textContent||'-';
+  document.getElementById('progress').style.width=(total?(sudah/total*100):0)+'%';
+
+  // LIST
+  document.getElementById('list').innerHTML = filteredByStatus.length ? filteredByStatus.map(m=>{
+    let p=paid[m.id]?.paid;
+    return `<div class="bg-[#1E2E2A] border border-zinc-800/50 p-3 rounded-2xl flex justify-between items-center gap-2">
+      <div class="flex gap-3 items-center min-w-0">
+        <div class="w-9 h-9 rounded-full bg-zinc-700 flex items-center justify-center text-xs font-bold shrink-0">${esc(m.name[0].toUpperCase())}</div>
+        <div class="min-w-0">
+          <p class="text-sm font-semibold truncate">${esc(m.name)}</p>
+          <p class="text-[11px] ${p?'text-[#1DB99A]':'text-zinc-500'}">${p?'✅ '+paid[m.id].date:'Belum bayar'}</p>
+        </div>
+      </div>
+      <div class="flex gap-1.5 shrink-0">
+        <button onclick="editMember(${m.id})" class="w-8 h-8 bg-zinc-800 hover:bg-zinc-700 rounded-full text-[12px]">✏️</button>
+        <button onclick="deleteMember(${m.id})" class="w-8 h-8 bg-red-500/10 hover:bg-red-500/20 text-red-400 rounded-full text-[12px]">🗑️</button>
+        <button onclick="toggle(${m.id})" class="px-3.5 py-1.5 rounded-full text-xs font-bold transition ${p?'bg-[#1DB99A]':'bg-zinc-700 hover:bg-zinc-600'}">${p?'Sudah':'Belum'}</button>
+      </div>
+    </div>`;
+  }).join('') : `<div class="bg-[#1E2E2A] border border-dashed border-zinc-700 p-6 rounded-2xl text-center text-sm text-zinc-500">Gak ada data. Coba ganti filter atau tambah anggota baru.</div>`;
+
+  // DONUT
+  let perc=total?Math.round(sudah/total*100):0;
+  document.getElementById('donut').style.background=`conic-gradient(#1DB99A ${perc}%, #2a2a2a ${perc}%)`;
+  document.getElementById('donut').textContent=perc+'%';
+  document.getElementById('donutText').textContent=perc+'% lunas bulan ini ('+sudah+' dari '+total+')';
+
+  // CHART 6 BULAN
+  let chart=document.getElementById('chart');
+  chart.innerHTML='';
+  for(let i=5;i>=0;i--){
+    let d=new Date(k+'-01T00:00:00');
+    d.setMonth(d.getMonth()-i);
+    let key=d.toISOString().slice(0,7);
+    let s=pays[key]?Object.values(pays[key]).filter(x=>x?.paid).length:0;
+    let h=total ? Math.max(12, (s/total)*80+8) : 12;
+    chart.innerHTML+=`<div class="flex-1 flex flex-col items-center gap-1"><div class="w-full bg-[#1DB99A] rounded-t-lg transition-all duration-500" style="height:${h}px;opacity:${s?1:0.2}"></div><span class="text-[10px] text-zinc-500">${bulan[d.getMonth()].slice(0,3)}</span></div>`;
+  }
+
+  // REKAP
+  let rekap=document.getElementById('rekap');
+  let keys=Object.keys(pays).sort().reverse().slice(0,12);
+  rekap.innerHTML= keys.length ? keys.map(kk=>{
+    let s=Object.values(pays[kk]).filter(x=>x?.paid).length;
+    let belumCount=Math.max(0, total-s);
+    return `<tr class="border-t border-zinc-800/60"><td class="p-2.5">${kk}</td><td class="p-2.5 text-center text-[#1DB99A] font-bold">${s}</td><td class="p-2.5 text-center text-red-400">${belumCount}</td><td class="p-2.5 text-right">Rp ${(s*nom).toLocaleString('id-ID')}</td></tr>`;
+  }).join('') : `<tr><td colspan="4" class="p-4 text-center text-zinc-500">Belum ada transaksi</td></tr>`;
+}
+
+function exportJSON(){
+  let blob=new Blob([JSON.stringify({members,pays, nominal: document.getElementById('nominal').value},null,2)],{type:'application/json'});
+  let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='catatkas-backup-'+getKey()+'.json';a.click();
+}
+function importJSON(e){
+  let file=e.target.files[0]; if(!file) return;
+  let r=new FileReader();
+  r.onload=ev=>{
+    try{
+      let d=JSON.parse(ev.target.result);
+      if(!d.members || !Array.isArray(d.members)) throw new Error('format salah');
+      members=d.members; pays=d.pays||{};
+      if(d.nominal) document.getElementById('nominal').value=d.nominal;
+      save(); render(); alert('Import berhasil!');
+    } catch(err){ alert('File rusak: '+err.message); }
+  };
+  r.readAsText(file); e.target.value='';
+}
+function exportWA(){
+  let k=getKey(); let paid=pays[k]||{}; let nom=parseInt(document.getElementById('nominal').value)||0;
+  let sudah=members.filter(m=>paid[m.id]?.paid).map(m=>m.name);
+  let belum=members.filter(m=>!paid[m.id]?.paid).map(m=>m.name);
+  let t=`*CatatKas ${sel.options[sel.selectedIndex].textContent}*\n\n✅ Sudah (${sudah.length}): ${sudah.join(', ')||'-'}\n❌ Belum (${belum.length}): ${belum.join(', ')||'-'}\n\n💰 Terkumpul: Rp ${(sudah.length*nom).toLocaleString('id-ID')}\n🎯 Target: Rp ${(members.length*nom).toLocaleString('id-ID')}`;
+  navigator.clipboard.writeText(t).then(()=>alert('Tersalin! Paste ke WA')).catch(()=>{ prompt('Copy manual:', t); });
+}
 render();
 </script>
 </body>
