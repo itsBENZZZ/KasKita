@@ -1,73 +1,96 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KasKita - Transparansi</title>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>KasKita - Transparan Live</title>
 <script src="https://cdn.tailwindcss.com"></script>
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
-<style>*{box-sizing:border-box}body{font-family:Poppins,sans-serif;background:#0F1A14;color:#fff;margin:0}</style>
+<style>
+*{font-family:Poppins,sans-serif}body{background:#0B1410;color:#fff;overflow-x:hidden}
+.glass{background:rgba(30,46,42,0.8);backdrop-filter:blur(16px);border:1px solid rgba(255,255,255,0.08)}
+.card-hover:active{transform:scale(0.98)}::-webkit-scrollbar{width:0}
+.watermark{position:fixed;inset:0;pointer-events:none;z-index:0;opacity:0.03;display:flex;align-items:center;justify-content:center;transform:rotate(-20deg);font-size:110px;font-weight:800}
+</style>
 </head>
-<body>
-<div class="w-full max-w-[480px] mx-auto px-3 py-3 pb-10">
-<!-- HEADER -->
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35]">
+<body class="relative">
+<div class="watermark">TRANSPARAN</div>
+
+<div class="w-full max-w-[480px] mx-auto px-4 py-4 pb-24 relative z-10">
+<!-- HEADER CANTIK -->
+<div class="glass rounded-[24px] p-4">
 <div class="flex justify-between items-center">
-<div class="flex gap-2 items-center"><div class="w-8 h-8 bg-[#1DB99A] rounded-xl flex items-center justify-center font-bold text-black">$</div><div><h1 class="font-bold text-sm">KasKita Transparan</h1><p class="text-[9px] text-zinc-400">mode liat - transparan</p></div></div>
-<span id="liveDot" class="text-[9px] bg-[#333] px-2 py-1 rounded-full">Menghubungkan...</span>
+<div class="flex gap-3 items-center">
+<div class="w-10 h-10 bg-gradient-to-br from-[#1DB99A] to-[#0E9F82] rounded-2xl flex items-center justify-center font-extrabold text-black text-lg shadow-lg shadow-emerald-900/30">$</div>
+<div><h1 class="font-bold text-[15px] leading-none">KasKita</h1><p class="text-[10px] text-emerald-300/70 mt-1 font-medium tracking-wide">TRANSPARAN • LIVE • ANTI EDIT</p></div>
 </div>
-<p class="text-[10px] bg-emerald-900/30 border border-emerald-900/50 text-emerald-300 rounded-xl px-3 py-2 mt-3 text-center">👁️ Mode Lihat - Kamu hanya bisa melihat, hanya bendahara yang bisa mengubah data</p>
-<div class="flex justify-between items-center mt-3">
-<p class="text-xs font-semibold">Bulan:</p>
-<select id="bulan" class="bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-xs"></select>
+<div id="liveDot" class="flex items-center gap-1.5 text-[10px] bg-black/60 px-3 py-1.5 rounded-full border border-white/10">⚫ Menghubungkan...</div>
+</div>
+
+<div class="mt-4 bg-gradient-to-r from-emerald-500/20 to-teal-500/10 border border-emerald-500/20 rounded-2xl px-3 py-2.5 flex gap-2 items-start">
+<span class="text-[13px]">👁️</span>
+<p class="text-[11px] leading-[1.4] text-emerald-100/80">Ini mode lihat doang ta. Kamu <b class="text-white">tidak bisa edit</b>. Semua perubahan hanya dari bendahara & langsung keliatan disini.</p>
+</div>
+
+<div class="flex gap-2 mt-4">
+<div class="flex-1 bg-black/40 rounded-2xl px-3 py-2.5 border border-white/5 flex justify-between items-center">
+<span class="text-[11px] text-zinc-400">Bulan</span>
+<select id="bulan" class="bg-transparent text-[12px] font-semibold outline-none text-right"></select>
+</div>
+<button id="btnShare" class="bg-white text-black rounded-2xl px-4 text-[11px] font-bold active:scale-95 transition">Share ↗</button>
 </div>
 </div>
 
-<!-- KARTU -->
-<div class="grid grid-cols-2 gap-2 mt-3">
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35]"><p class="text-[10px] text-zinc-400">Nominal Bulan Ini</p><p id="nomTxt" class="font-bold text-sm mt-1">Rp 0</p></div>
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35]"><p class="text-[10px] text-zinc-400">Saldo Awal</p><p id="saldoAwalTxt" class="font-bold text-sm mt-1 text-amber-200">Rp 0</p></div>
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35]"><p class="text-[10px] text-zinc-400">Masuk Bulan Ini</p><p id="masuk" class="font-bold text-emerald-400 text-sm truncate">Rp 0</p><p id="detail" class="text-[9px] text-zinc-500"></p></div>
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35]"><p class="text-[10px] text-zinc-400">Keluar Bulan Ini</p><p id="keluar" class="font-bold text-red-400 text-sm truncate">Rp 0</p></div>
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] col-span-2 flex justify-between items-center"><div><p class="text-[10px] text-zinc-400">Sisa Kas Bulan Ini</p><p id="sisa" class="font-bold text-lg">Rp 0</p></div><div class="text-right"><p id="prog" class="font-bold text-sm">0%</p><div class="w-20 h-2 bg-black rounded-full mt-1"><div id="bar" class="h-2 bg-[#1DB99A] rounded-full" style="width:0%"></div></div><p class="text-[8px] text-zinc-500 mt-1">sudah bayar</p></div></div>
+<!-- HERO SALDO -->
+<div class="mt-4 rounded-[28px] p-[1px] bg-gradient-to-br from-emerald-400/40 to-transparent">
+<div class="bg-gradient-to-br from-[#1E2E2A] to-[#14211D] rounded-[27px] p-5 relative overflow-hidden">
+<div class="absolute -right-10 -top-10 w-32 h-32 bg-emerald-400/10 rounded-full blur-2xl"></div>
+<p class="text-[11px] tracking-[0.2em] text-zinc-400">SISA KAS BULAN INI</p>
+<p id="sisa" class="font-extrabold text-[32px] leading-none mt-2 tracking-tight">Rp 0</p>
+<div class="flex gap-2 mt-4">
+<div class="flex-1 bg-black/40 rounded-2xl p-3"><p class="text-[9px] text-zinc-400">Saldo Awal</p><p id="saldoAwalTxt" class="font-bold text-[13px] mt-1 text-amber-200">Rp 0</p></div>
+<div class="flex-1 bg-black/40 rounded-2xl p-3"><p class="text-[9px] text-zinc-400">Nominal</p><p id="nomTxt" class="font-bold text-[13px] mt-1">Rp 0</p></div>
+<div class="flex-1 bg-black/40 rounded-2xl p-3 border border-emerald-500/20"><p class="text-[9px] text-emerald-300">Sudah Bayar</p><p id="prog" class="font-bold text-[13px] mt-1">0% • 0/0</p></div>
 </div>
-
-<!-- TOTAL -->
-<div class="bg-gradient-to-br from-[#1E2E2A] to-[#0f2a20] rounded-2xl p-3 border border-emerald-900/50 mt-3">
-<p class="text-xs font-bold text-emerald-300">💰 TOTAL Okt 2026 - 2035 (9 Tahun)</p>
-<div class="grid grid-cols-3 gap-2 mt-2">
-<div class="bg-black/50 rounded-xl p-2 text-center"><p class="text-[9px] text-zinc-400">Total Masuk</p><p id="totalMasuk" class="font-bold text-emerald-400 text-[11px] mt-1">Rp 0</p></div>
-<div class="bg-black/50 rounded-xl p-2 text-center"><p class="text-[9px] text-zinc-400">Total Keluar</p><p id="totalKeluar" class="font-bold text-red-400 text-[11px] mt-1">Rp 0</p></div>
-<div class="bg-black/50 rounded-xl p-2 text-center"><p class="text-[9px] text-zinc-400">Total Sisa</p><p id="totalSisa" class="font-bold text-white text-[11px] mt-1">Rp 0</p></div>
+<div class="mt-4"><div class="w-full h-2.5 bg-black rounded-full overflow-hidden"><div id="bar" class="h-full bg-gradient-to-r from-[#1DB99A] to-emerald-300 rounded-full transition-all duration-700" style="width:0%"></div></div></div>
 </div>
 </div>
 
-<!-- STATUS BAYAR -->
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3">
-<p class="text-xs font-semibold">👥 Status Bayar Bulan Ini</p>
-<div class="grid grid-cols-2 gap-2 mt-2">
-<div class="bg-black border border-emerald-900/50 rounded-xl p-2"><p class="text-[10px] text-emerald-400">✅ Sudah: <b id="sudahCount">0</b> orang</p><div id="sudahList" class="text-[10px] text-zinc-300 mt-2 leading-5 max-h-[200px] overflow-auto"></div></div>
-<div class="bg-black border border-red-900/50 rounded-xl p-2"><p class="text-[10px] text-red-400">❌ Belum: <b id="belumCount">0</b> orang</p><div id="belumList" class="text-[10px] text-zinc-400 mt-2 leading-5 max-h-[200px] overflow-auto"></div></div>
+<!-- 4 KARTU KECIL -->
+<div class="grid grid-cols-2 gap-3 mt-4">
+<div class="glass rounded-[20px] p-4 card-hover transition"><p class="text-[10px] text-zinc-400">💚 Masuk Bulan Ini</p><p id="masuk" class="font-bold text-[15px] mt-1 text-emerald-300">Rp 0</p><p id="detail" class="text-[9px] text-zinc-500 mt-1 leading-tight"></p></div>
+<div class="glass rounded-[20px] p-4 card-hover transition"><p class="text-[10px] text-zinc-400">❤️ Keluar Bulan Ini</p><p id="keluar" class="font-bold text-[15px] mt-1 text-red-300">Rp 0</p><p class="text-[9px] text-zinc-500 mt-1">total pengeluaran</p></div>
+<div class="glass rounded-[20px] p-4 col-span-2 flex justify-between items-center bg-gradient-to-br from-emerald-900/20 to-transparent border-emerald-800/30">
+<div><p class="text-[10px] text-zinc-400">💰 Total Semua Waktu (Okt 2026 - 2035)</p><div class="flex gap-4 mt-2"><div><p class="text-[9px] text-zinc-500">Masuk</p><p id="totalMasuk" class="font-bold text-[11px] text-emerald-400">Rp 0</p></div><div><p class="text-[9px] text-zinc-500">Keluar</p><p id="totalKeluar" class="font-bold text-[11px] text-red-400">Rp 0</p></div><div><p class="text-[9px] text-zinc-500">Sisa</p><p id="totalSisa" class="font-bold text-[11px] text-white">Rp 0</p></div></div></div><div class="text-2xl">🏦</div>
 </div>
 </div>
 
-<!-- PENGELUARAN = TRANSPARANSI -->
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3">
-<p class="text-xs font-semibold">💸 Dana Kepake Buat Apa Aja? (Transparan)</p>
-<p class="text-[10px] text-zinc-500 mt-1">Semua pengeluaran dicatat disini biar jelas</p>
+<!-- STATUS BAYAR - FIX BUG SEARCH -->
+<div class="glass rounded-[24px] p-4 mt-4">
+<div class="flex justify-between items-center"><p class="font-semibold text-[13px]">👥 Status Bayar</p><input id="cari" placeholder="Cari nama..." class="bg-black/50 border border-white/10 rounded-full px-3 py-1.5 text-[11px] w-32 outline-none focus:border-emerald-500/50"></div>
+<div class="grid grid-cols-2 gap-3 mt-4">
+<div class="bg-[#0F1A14] rounded-[18px] p-3 border border-emerald-900/30"><p class="text-[11px] font-semibold text-emerald-300">✅ Sudah <b id="sudahCount">0</b></p><div id="sudahList" class="mt-3 space-y-1.5 max-h-[260px] overflow-auto pr-1"></div></div>
+<div class="bg-[#0F1A14] rounded-[18px] p-3 border border-red-900/30"><p class="text-[11px] font-semibold text-red-300">❌ Belum <b id="belumCount">0</b></p><div id="belumList" class="mt-3 space-y-1.5 max-h-[260px] overflow-auto pr-1"></div></div>
+</div>
+</div>
+
+<!-- PENGELUARAN -->
+<div class="glass rounded-[24px] p-4 mt-4">
+<p class="font-semibold text-[13px]">💸 Dana Kepake Buat Apa? <span class="text-[10px] font-normal text-zinc-400">transparan</span></p>
 <div id="jList" class="mt-3 space-y-2"></div>
-<p id="jEmpty" class="text-[11px] text-zinc-500 text-center py-4 hidden">Belum ada pengeluaran bulan ini 👍</p>
-<div class="bg-black rounded-xl p-2 mt-3 flex justify-between"><p class="text-[10px] text-zinc-400">Total Keluar Bulan Ini:</p><p id="jTotal" class="text-[11px] font-bold text-red-400">Rp 0</p></div>
+<p id="jEmpty" class="hidden text-center text-[12px] text-zinc-500 py-8 bg-black/30 rounded-2xl">Belum ada pengeluaran bulan ini 👍<br><span class="text-[10px]">Aman, belum kepake!</span></p>
+<div class="mt-3 bg-black/60 rounded-2xl px-4 py-3 flex justify-between items-center border border-white/5"><p class="text-[11px] text-zinc-400">Total keluar bulan ini</p><p id="jTotal" class="font-bold text-[13px] text-red-300">Rp 0</p></div>
 </div>
 
 <!-- REKAP -->
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3"><p class="text-xs font-semibold mb-2">📅 Rekap 6 Bulan Terakhir</p><table class="w-full text-[11px] table-fixed"><thead class="text-zinc-500 text-[10px]"><tr><th class="text-left w-[28%]">Bulan</th><th class="text-right w-[24%]">Masuk</th><th class="text-right w-[24%]">Keluar</th><th class="text-right w-[24%]">Sisa</th></tr></thead><tbody id="rekap"></tbody></table></div>
+<div class="glass rounded-[24px] p-4 mt-4"><p class="font-semibold text-[13px] mb-3">📅 Rekap 6 Bulan</p><div class="bg-black/40 rounded-2xl overflow-hidden border border-white/5"><table class="w-full text-[11px]"><thead class="bg-white/[0.03] text-[9px] text-zinc-500 uppercase tracking-wider"><tr><th class="text-left py-2.5 px-3">Bulan</th><th class="text-right px-3">Masuk</th><th class="text-right px-3">Keluar</th><th class="text-right px-3">Sisa</th></tr></thead><tbody id="rekap" class="divide-y divide-white/[0.04]"></tbody></table></div></div>
 
-<div class="text-center mt-6"><p class="text-[10px] text-zinc-600">Dikelola oleh Bendahara - Data Live 🔴</p><p class="text-[9px] text-zinc-700 mt-1">KasKita dari kita untuk kita</p></div>
+<p class="text-center text-[10px] text-zinc-600 mt-8">Dikelola Bendahara • Data Live dari Firebase 🔴<br><span class="text-[9px] text-zinc-700">kaskita-puce.vercel.app/murid.html</span></p>
 </div>
 
 <script>
+// === FIREBASE (SAMA KAYAK BENDAHARA) ===
 const firebaseConfig = {
   apiKey: "AIzaSyAcNJB8vIk-rOH7Ho70XB5lPPIJnbmBmyc",
   authDomain: "kaskita-79273.firebaseapp.com",
@@ -81,63 +104,95 @@ firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 const kasRef = db.ref('kaskita/94mahasiswa');
 
-let anggota=[];let bayar={};let keluarData={};let nominalData={};let curBulan="2026-10";
+let anggota=[], bayar={}, keluarData={}, nominalData={};
+let curBulan = new Date().toISOString().slice(0,7);
+if(curBulan < "2026-10") curBulan = "2026-10";
+if(curBulan > "2035-12") curBulan = "2026-10";
 
-function fmtB(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
-function parseB(s){let[y,m]=s.split('-').map(Number);return new Date(y,m-1,1)}
-function namaB(d){return d.toLocaleDateString('id-ID',{month:'short',year:'numeric'})}
-function getNom(){return nominalData[curBulan]||10000}
-function getMasukForMonth(k){let b=bayar[k]||{};if(Object.keys(b).length===0) return 0;let nom=nominalData[k]||10000;return Object.keys(b).length*nom;}
-function getKeluarForMonth(k){return (keluarData[k]||[]).reduce((s,e)=>s+e.nom,0)}
-function getSaldoAwal(){let total=0;let d=new Date(2026,9,1);let cur=parseB(curBulan);while(d < cur){let k=fmtB(d);total += getMasukForMonth(k) - getKeluarForMonth(k);d.setMonth(d.getMonth()+1);}return Math.max(0,total);}
-function getTotalAll(){let totalMasuk=0,totalKeluar=0;let d=new Date(2026,9,1);let end=new Date(2035,11,1);while(d <= end){let k=fmtB(d);totalMasuk += getMasukForMonth(k);totalKeluar += getKeluarForMonth(k);d.setMonth(d.getMonth()+1);}return {totalMasuk,totalKeluar,totalSisa:totalMasuk-totalKeluar};}
-function statusBayar(n){return(bayar[curBulan]||{})[n]||'Belum'}
+const fmtB = d=> d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+const parseB = s=>{let[y,m]=s.split('-').map(Number);return new Date(y,m-1,1)};
+const namaB = d=> d.toLocaleDateString('id-ID',{month:'short',year:'numeric'});
+const getNom = ()=> nominalData[curBulan] || 10000;
+const getMasuk = k=>{let b=bayar[k]||{};let c=Object.keys(b).length;if(c===0) return 0;return c*(nominalData[k]||10000)};
+const getKeluar = k=> (keluarData[k]||[]).reduce((s,e)=>s+(Number(e.nom)||0),0);
+const getSaldoAwal = ()=>{let t=0;let d=new Date(2026,9,1);let cur=parseB(curBulan);while(d<cur){let k=fmtB(d);t+=getMasuk(k)-getKeluar(k);d.setMonth(d.getMonth()+1);}return Math.max(0,t)};
+const getTotalAll = ()=>{let m=0,k=0;let d=new Date(2026,9,1);let end=new Date(2035,11,1);while(d<=end){let key=fmtB(d);m+=getMasuk(key);k+=getKeluar(key);d.setMonth(d.getMonth()+1);}return{masuk:m,keluar:k,sisa:m-k}};
 
-let sel=document.getElementById('bulan');
-for(let y=2026;y<=2035;y++){let startM = (y===2026)?9:0;for(let m=startM;m<12;m++){let d=new Date(y,m,1);let v=fmtB(d);let o=document.createElement('option');o.value=v;o.textContent=namaB(d);if(v==curBulan)o.selected=true;sel.appendChild(o)}}
+const sel=document.getElementById('bulan');
+for(let y=2026;y<=2035;y++){let sm=(y===2026)?9:0;for(let m=sm;m<12;m++){let d=new Date(y,m,1);let v=fmtB(d);let o=document.createElement('option');o.value=v;o.textContent=namaB(d);if(v===curBulan)o.selected=true;sel.appendChild(o);}}
 sel.onchange=e=>{curBulan=e.target.value;render();};
 
-function render(){
-  document.getElementById('nomTxt').textContent='Rp '+getNom().toLocaleString('id-ID');
-  let masuk=getMasukForMonth(curBulan);let keluar=getKeluarForMonth(curBulan);let saldoAwal=getSaldoAwal();let sisa=saldoAwal+masuk-keluar;let prog=anggota.length?Math.round(Object.keys(bayar[curBulan]||{}).length/anggota.length*100):0;
-  let b=bayar[curBulan]||{};let cash=0,tf=0;Object.values(b).forEach(v=>{if(v=='Cash')cash+=getNom();if(v=='TF')tf+=getNom()});
-  document.getElementById('masuk').textContent='Rp '+masuk.toLocaleString('id-ID');
-  document.getElementById('detail').textContent=cash||tf?`Cash Rp ${cash.toLocaleString('id-ID')} | TF Rp ${tf.toLocaleString('id-ID')}`:'';
-  document.getElementById('keluar').textContent='Rp '+keluar.toLocaleString('id-ID');
-  document.getElementById('sisa').textContent='Rp '+sisa.toLocaleString('id-ID');
-  document.getElementById('saldoAwalTxt').textContent='Rp '+saldoAwal.toLocaleString('id-ID');
-  document.getElementById('prog').textContent=prog+'%';document.getElementById('bar').style.width=prog+'%';
-  let tot=getTotalAll();
-  document.getElementById('totalMasuk').textContent='Rp '+tot.totalMasuk.toLocaleString('id-ID');
-  document.getElementById('totalKeluar').textContent='Rp '+tot.totalKeluar.toLocaleString('id-ID');
-  document.getElementById('totalSisa').textContent='Rp '+tot.totalSisa.toLocaleString('id-ID');
+function render(filter=""){
+let masuk=getMasuk(curBulan);let keluar=getKeluar(curBulan);let saldoAwal=getSaldoAwal();let sisa=saldoAwal+masuk-keluar;
+let b=bayar[curBulan]||{};let count=Object.keys(b).length;let totalAnggota=anggota.length||1;let prog=Math.round(count/totalAnggota*100);
+let cash=0,tf=0;Object.values(b).forEach(v=>{if(v==='Cash')cash++;if(v==='TF')tf++;});
 
-  // Status bayar
-  let sudah=[],belum=[];anggota.forEach(n=>{ if(statusBayar(n)=='Belum') belum.push(n); else sudah.push(n); });
-  document.getElementById('sudahCount').textContent=sudah.length;document.getElementById('belumCount').textContent=belum.length;
-  let sudahEl=document.getElementById('sudahList');sudahEl.innerHTML='';
-  sudah.forEach(n=>{let s=statusBayar(n);let div=document.createElement('div');div.className='flex justify-between';div.innerHTML=`<span>${n}</span><span class="text-[8px] px-1.5 py-0.5 rounded-full ${s=='Cash'?'bg-amber-400 text-black':'bg-sky-400 text-black'}">${s}</span>`;sudahEl.appendChild(div);});
-  if(sudah.length==0) sudahEl.innerHTML='<span class="text-zinc-500">Belum ada yang bayar</span>';
-  let belumEl=document.getElementById('belumList');belumEl.innerHTML='';
-  belum.forEach(n=>{let div=document.createElement('div');div.textContent=n;belumEl.appendChild(div);});
-  if(belum.length==0) belumEl.innerHTML='<span class="text-zinc-500">Semua udah bayar! 🎉</span>';
+document.getElementById('nomTxt').textContent='Rp '+getNom().toLocaleString('id-ID');
+document.getElementById('saldoAwalTxt').textContent='Rp '+saldoAwal.toLocaleString('id-ID');
+document.getElementById('masuk').textContent='Rp '+masuk.toLocaleString('id-ID');
+document.getElementById('detail').textContent=count?`${cash} Cash • ${tf} TF • ${count} orang`:'Belum ada yang bayar';
+document.getElementById('keluar').textContent='Rp '+keluar.toLocaleString('id-ID');
+document.getElementById('sisa').textContent='Rp '+sisa.toLocaleString('id-ID');
+document.getElementById('prog').textContent=prog+'% • '+count+'/'+anggota.length;
+document.getElementById('bar').style.width=prog+'%';
 
-  // Pengeluaran transparan
-  let list=document.getElementById('jList');list.innerHTML='';
-  let keluarList=keluarData[curBulan]||[];
-  if(keluarList.length==0){document.getElementById('jEmpty').classList.remove('hidden');}else{document.getElementById('jEmpty').classList.add('hidden');}
-  keluarList.forEach(e=>{let div=document.createElement('div');div.className='flex justify-between items-center bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-[11px]';div.innerHTML=`<span class="flex-1 truncate">🧾 ${e.desc}</span><span class="font-bold text-red-400 ml-2">- Rp ${e.nom.toLocaleString('id-ID')}</span>`;list.appendChild(div);});
-  document.getElementById('jTotal').textContent='Rp '+getKeluarForMonth(curBulan).toLocaleString('id-ID');
+let tot=getTotalAll();
+document.getElementById('totalMasuk').textContent='Rp '+tot.masuk.toLocaleString('id-ID');
+document.getElementById('totalKeluar').textContent='Rp '+tot.keluar.toLocaleString('id-ID');
+document.getElementById('totalSisa').textContent='Rp '+tot.sisa.toLocaleString('id-ID');
 
-  // Rekap
-  let tb=document.getElementById('rekap');tb.innerHTML='';let cur=parseB(curBulan);for(let i=5;i>=0;i--){let d=new Date(cur.getFullYear(),cur.getMonth()-i,1);if(d < new Date(2026,9,1)) continue;let k=fmtB(d);let m=getMasukForMonth(k);let ke=getKeluarForMonth(k);let tr=document.createElement('tr');tr.className='border-t border-[#2a3d35]';tr.innerHTML=`<td class="py-2 truncate">${namaB(d)}</td><td class="text-right text-emerald-400 truncate">Rp ${m.toLocaleString('id-ID')}</td><td class="text-right text-red-400 truncate">Rp ${ke.toLocaleString('id-ID')}</td><td class="text-right font-bold truncate">Rp ${(m-ke).toLocaleString('id-ID')}</td>`;tb.appendChild(tr);}
+// STATUS BAYAR + FILTER (FIX BUG)
+let sudah=[],belum=[];
+anggota.forEach(n=>{let s=(bayar[curBulan]||{})[n];if(s) sudah.push({n,s}); else belum.push(n);});
+if(filter){let f=filter.toLowerCase();sudah=sudah.filter(x=>x.n.toLowerCase().includes(f));belum=belum.filter(x=>x.toLowerCase().includes(f));}
+
+document.getElementById('sudahCount').textContent=sudah.length;
+document.getElementById('belumCount').textContent=belum.length;
+
+let sudahEl=document.getElementById('sudahList');sudahEl.innerHTML='';
+sudah.forEach(({n,s})=>{let div=document.createElement('div');div.className='flex justify-between items-center bg-emerald-500/10 border border-emerald-500/10 rounded-xl px-2.5 py-2';div.innerHTML=`<span class="text-[11px] truncate">${n}</span><span class="text-[8px] px-2 py-0.5 rounded-full font-bold ${s==='Cash'?'bg-amber-300 text-black':'bg-sky-300 text-black'}">${s}</span>`;sudahEl.appendChild(div);});
+if(sudah.length===0) sudahEl.innerHTML='<p class="text-[11px] text-zinc-500 text-center py-4">Belum ada</p>';
+
+let belumEl=document.getElementById('belumList');belumEl.innerHTML='';
+belum.forEach(n=>{let div=document.createElement('div');div.className='bg-red-500/5 border border-red-500/10 rounded-xl px-2.5 py-2 text-[11px] text-zinc-300';div.textContent=n;belumEl.appendChild(div);});
+if(belum.length===0) belumEl.innerHTML='<p class="text-[11px] text-zinc-500 text-center py-4">Semua lunas 🎉</p>';
+
+// PENGELUARAN
+let list=document.getElementById('jList');list.innerHTML='';
+let keluarList=keluarData[curBulan]||[];
+document.getElementById('jEmpty').classList.toggle('hidden', keluarList.length!==0);
+keluarList.slice().reverse().forEach(e=>{
+let div=document.createElement('div');
+div.className='flex justify-between items-center bg-black/40 border border-white/5 rounded-2xl px-3 py-3';
+div.innerHTML=`<div class="flex-1"><p class="text-[12px] font-medium">🧾 ${e.desc}</p><p class="text-[9px] text-zinc-500 mt-0.5">${e.tgl||''}</p></div><span class="font-bold text-[12px] text-red-300 ml-2">-Rp ${Number(e.nom).toLocaleString('id-ID')}</span>`;
+list.appendChild(div);
+});
+document.getElementById('jTotal').textContent='Rp '+keluar.toLocaleString('id-ID');
+
+// REKAP 6 BULAN
+let tb=document.getElementById('rekap');tb.innerHTML='';
+let cur=parseB(curBulan);
+for(let i=5;i>=0;i--){
+let d=new Date(cur.getFullYear(),cur.getMonth()-i,1);
+if(d < new Date(2026,9,1)) continue;
+let k=fmtB(d);let m=getMasuk(k);let ke=getKeluar(k);
+let tr=document.createElement('tr');tr.className='hover:bg-white/[0.02]';
+tr.innerHTML=`<td class="py-3 px-3 font-medium ${k===curBulan?'text-emerald-300':''}">${namaB(d)} ${k===curBulan?'<span class="text-[8px] bg-emerald-500 text-black px-1 rounded ml-1">INI</span>':''}</td><td class="text-right px-3 text-emerald-400/80">Rp ${m.toLocaleString('id-ID')}</td><td class="text-right px-3 text-red-400/80">Rp ${ke.toLocaleString('id-ID')}</td><td class="text-right px-3 font-bold">Rp ${(m-ke).toLocaleString('id-ID')}</td>`;
+tb.appendChild(tr);
+}
 }
 
-kasRef.on('value',(snap)=>{
-  let data=snap.val();if(!data) return;
-  anggota=data.anggota||[];bayar=data.bayar||{};keluarData=data.keluarData||{};nominalData=data.nominalData||{};
-  document.getElementById('liveDot').textContent='🟢 Live';
-  render();
+document.getElementById('cari').addEventListener('input', e=> render(e.target.value));
+document.getElementById('btnShare').onclick=()=>{
+let txt=`KasKita Transparan - ${namaB(parseB(curBulan))}\nSisa: ${document.getElementById('sisa').textContent}\nCek live: https://kaskita-puce.vercel.app/murid.html`;
+if(navigator.share){navigator.share({title:'KasKita',text:txt})}else{navigator.clipboard.writeText(txt);alert('Link dicopy!');}
+};
+
+kasRef.on('value', snap=>{
+let data=snap.val();if(!data){document.getElementById('liveDot').innerHTML='🔴 Data kosong';return;}
+anggota=data.anggota||[];bayar=data.bayar||{};keluarData=data.keluarData||{};nominalData=data.nominalData||{};
+document.getElementById('liveDot').innerHTML='<span class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse inline-block"></span> Live • '+anggota.length+' anggota';
+render(document.getElementById('cari').value);
 });
 </script>
 </body>
