@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Admin KasKita - Beben Only</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-database-compat.js"></script>
+<style>body{font-family:Poppins,sans-serif;background:#0F1A14;color:#fff}</style>
+</head>
+<body>
+<div class="max-w-[600px] mx-auto p-4">
+<div class="bg-[#1E2E2A] rounded-2xl p-4 border border-red-900/50">
+<h1 class="font-bold text-lg">🔐 ADMIN KASKITA - BEBEN ONLY</h1>
+<p class="text-[10px] text-zinc-400 mt-1">Kelola siapa yang boleh masuk web kas</p>
+<p class="text-[9px] text-zinc-500 mt-1">PIN Admin: BEBEN123</p>
+</div>
+
+<div id="adminPinModal" class="fixed inset-0 bg-black flex items-center justify-center p-4 z-[80]"><div class="bg-[#1E2E2A] border border-red-900/50 rounded-2xl p-5 w-full max-w-[320px] text-center"><p class="font-bold">Admin Access</p><p class="text-[10px] text-zinc-400 mt-1">Masukkan PIN Admin Beben</p><input id="adminPinInput" type="password" placeholder="PIN ADMIN" class="w-full mt-3 bg-black border border-[#2a3d35] rounded-xl px-3 py-3 text-center tracking-widest"><p id="adminPinError" class="text-[10px] text-red-400 mt-2 hidden">PIN Admin salah!</p><button id="adminPinBtn" class="w-full mt-3 bg-red-500 text-white font-bold py-2.5 rounded-xl text-xs">Masuk Admin</button></div></div>
+
+<div class="grid grid-cols-3 gap-2 mt-4">
+<div class="bg-[#1E2E2A] rounded-xl p-3 border border-[#2a3d35] text-center"><p class="text-[10px] text-zinc-400">Total Device</p><p id="totalDevice" class="font-bold text-lg">0</p></div>
+<div class="bg-[#1E2E2A] rounded-xl p-3 border border-emerald-900/50 text-center"><p class="text-[10px] text-zinc-400">Online Now</p><p id="onlineNow" class="font-bold text-lg text-emerald-400">0</p></div>
+<div class="bg-[#1E2E2A] rounded-xl p-3 border border-red-900/50 text-center"><p class="text-[10px] text-zinc-400">Blacklisted</p><p id="totalBlack" class="font-bold text-lg text-red-400">0</p></div>
+</div>
+
+<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-4">
+<p class="font-semibold text-xs">👥 Live Online Sekarang</p>
+<div id="onlineList" class="flex flex-wrap gap-1.5 mt-2"></div>
+</div>
+
+<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-4">
+<div class="flex justify-between items-center"><p class="font-semibold text-xs">📱 Semua Device Yang Pernah Masuk</p><button id="refreshBtn" class="text-[10px] bg-black border border-[#2a3d35] px-3 py-1 rounded-full">Refresh</button></div>
+<input id="searchDevice" placeholder="Cari nama/device..." class="w-full mt-3 bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-xs">
+<div id="deviceList" class="mt-3 space-y-2 max-h-[600px] overflow-auto"></div>
+</div>
+
+<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-amber-900/30 mt-4">
+<p class="text-xs font-bold text-amber-300">⚙️ Aksi Admin</p>
+<div class="grid grid-cols-2 gap-2 mt-3">
+<button id="clearPresenceBtn" class="bg-amber-600 text-black font-bold py-2 rounded-xl text-[11px]">Kick Semua Online</button>
+<button id="clearBlacklistBtn" class="bg-emerald-600 text-black font-bold py-2 rounded-xl text-[11px]">Buka Semua Blacklist</button>
+</div>
+<button id="resetAllBtn" class="w-full mt-2 bg-red-900/50 border border-red-900 text-red-300 font-bold py-2 rounded-xl text-[11px]">⚠️ Reset Semua Device (Hapus History)</button>
+</div>
+</div>
+
+<script>
+const firebaseConfig = {
+  apiKey: "AIzaSyAcNJB8vIk-rOH7Ho70XB5lPPIJnbmBmyc",
+  authDomain: "kaskita-79273.firebaseapp.com",
+  databaseURL: "https://kaskita-79273-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "kaskita-79273",
+  storageBucket: "kaskita-79273.firebasestorage.app",
+  messagingSenderId: "205273176059",
+  appId: "1:205273176059:web:a7071865edeaaefbd29d5e"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+const devicesRef = db.ref('kaskita/devices');
+const presenceRef = db.ref('kaskita/presence');
+
+const ADMIN_PIN = "BEBEN123";
+let isAdmin = localStorage.getItem('kaskita_admin_ok')==='true';
+
+function checkAdmin(){
+  if(isAdmin) document.getElementById('adminPinModal').style.display='none';
+  else document.getElementById('adminPinModal').style.display='flex';
+}
+checkAdmin();
+
+document.getElementById('adminPinBtn').onclick=()=>{
+  let p=document.getElementById('adminPinInput').value;
+  if(p===ADMIN_PIN){
+    isAdmin=true;
+    localStorage.setItem('kaskita_admin_ok','true');
+    document.getElementById('adminPinModal').style.display='none';
+    load();
+  } else {
+    document.getElementById('adminPinError').classList.remove('hidden');
+  }
+};
+
+function load(){
+  devicesRef.on('value', renderDevices);
+  presenceRef.on('value', renderPresence);
+}
+function renderPresence(snap){
+  let data=snap.val()||{};
+  let names=[...new Set(Object.values(data).map(v=>v.name))];
+  document.getElementById('onlineNow').textContent=names.length;
+  let el=document.getElementById('onlineList');
+  el.innerHTML='';
+  names.forEach(n=>{
+    let s=document.createElement('span');
+    s.className='text-[10px] bg-[#1DB99A] text-black font-bold px-2 py-1 rounded-full';
+    s.textContent='🟢 '+n;
+    el.appendChild(s);
+  });
+  if(names.length===0) el.innerHTML='<span class="text-[9px] text-zinc-500">Ga ada yang online</span>';
+}
+
+let allDevices={};
+function renderDevices(snap){
+  allDevices=snap.val()||{};
+  let count=Object.keys(allDevices).length;
+  let black=Object.values(allDevices).filter(d=>d.blacklisted).length;
+  document.getElementById('totalDevice').textContent=count;
+  document.getElementById('totalBlack').textContent=black;
+  
+  let q=(document.getElementById('searchDevice').value||'').toLowerCase();
+  let list=document.getElementById('deviceList');
+  list.innerHTML='';
+  
+  Object.entries(allDevices).sort((a,b)=>(b[1].lastSeen||0)-(a[1].lastSeen||0)).forEach(([id, info])=>{
+    if(q && !((info.name||'').toLowerCase().includes(q) || id.toLowerCase().includes(q))) return;
+    let div=document.createElement('div');
+    div.className='bg-black border rounded-xl p-3 '+(info.blacklisted?'border-red-900':'border-[#2a3d35]');
+    let date=new Date(info.lastSeen||Date.now()).toLocaleString('id-ID');
+    div.innerHTML=`
+      <div class="flex justify-between items-start gap-2">
+        <div class="flex-1 min-w-0">
+          <p class="font-bold text-xs truncate">${info.name||'TANPA NAMA'} ${info.blacklisted?'<span class="text-[9px] bg-red-500 text-white px-1.5 py-0.5 rounded-full ml-1">BLACKLISTED</span>':''}</p>
+          <p class="text-[9px] text-zinc-500 mt-1 truncate">ID: ${id}</p>
+          <p class="text-[9px] text-zinc-500 truncate">UA: ${(info.ua||'').slice(0,50)}</p>
+          <p class="text-[9px] text-zinc-400 mt-1">Last: ${date}</p>
+        </div>
+        <div class="flex flex-col gap-1 shrink-0">
+          <button data-act="black" data-id="${id}" class="text-[10px] font-bold px-3 py-1.5 rounded-full ${info.blacklisted?'bg-emerald-600 text-white':'bg-red-500 text-white'}">${info.blacklisted?'Unblacklist':'Blacklist'}</button>
+          <button data-act="kick" data-id="${id}" class="text-[10px] bg-zinc-800 text-white px-3 py-1 rounded-full">Kick</button>
+          <button data-act="del" data-id="${id}" class="text-[10px] bg-black border border-zinc-700 text-zinc-400 px-3 py-1 rounded-full">Hapus</button>
+        </div>
+      </div>
+    `;
+    list.appendChild(div);
+  });
+  list.querySelectorAll('button').forEach(b=>{
+    b.onclick=()=>{
+      let id=b.dataset.id;
+      let act=b.dataset.act;
+      if(act==='black'){
+        let cur=allDevices[id];
+        devicesRef.child(id).update({blacklisted: !cur.blacklisted});
+      } else if(act==='kick'){
+        let name=allDevices[id]?.name;
+        if(name){
+          presenceRef.once('value').then(s=>{
+            let data=s.val()||{};
+            Object.entries(data).forEach(([k,v])=>{ if(v.name===name) presenceRef.child(k).remove(); });
+          });
+        }
+        alert('Kicked '+allDevices[id]?.name);
+      } else if(act==='del'){
+        if(confirm('Hapus device '+allDevices[id]?.name+'?')) devicesRef.child(id).remove();
+      }
+    };
+  });
+}
+
+document.getElementById('searchDevice').oninput=()=>renderDevices({val:()=>allDevices});
+document.getElementById('refreshBtn').onclick=()=>devicesRef.once('value').then(renderDevices);
+
+document.getElementById('clearPresenceBtn').onclick=()=>{
+  if(confirm('Kick semua yang online sekarang?')) presenceRef.remove();
+};
+document.getElementById('clearBlacklistBtn').onclick=()=>{
+  if(confirm('Buka semua blacklist?')){
+    Object.entries(allDevices).forEach(([id, info])=>{
+      if(info.blacklisted) devicesRef.child(id).update({blacklisted:false});
+    });
+  }
+};
+document.getElementById('resetAllBtn').onclick=()=>{
+  if(confirm('HAPUS SEMUA HISTORY DEVICE? Ga bisa dibalikin!')){
+    if(confirm('Yakin banget ta Beben?')) devicesRef.remove();
+  }
+};
+
+if(isAdmin) load();
+</script>
+</body>
+</html>
