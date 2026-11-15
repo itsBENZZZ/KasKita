@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KasKita.</title>
+<title>KasKita 94 + Edit</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>*{box-sizing:border-box}body{font-family:Poppins,sans-serif;background:#0F1A14;color:#fff;margin:0;overflow-x:hidden}canvas{max-width:100%;display:block}</style>
@@ -10,79 +10,31 @@
 <body>
 <div class="w-full max-w-[480px] mx-auto px-3 py-3 pb-24">
 <div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] flex justify-between items-center">
-<div class="flex gap-2 items-center min-w-0"><div class="w-8 h-8 bg-[#1DB99A] rounded-xl flex items-center justify-center font-bold text-black">$</div><div class="min-w-0"><h1 class="font-bold text-sm truncate">KasKita</h1><p class="text-[9px] text-zinc-400 truncate">IF-KA + IF-KM | 2023-2045</p></div></div>
+<div class="flex gap-2 items-center min-w-0"><div class="w-8 h-8 bg-[#1DB99A] rounded-xl flex items-center justify-center font-bold text-black">$</div><div class="min-w-0"><h1 class="font-bold text-sm">KasKita 94 + Edit</h1><p class="text-[9px] text-zinc-400">Edit Nama | PIN 12344321 | 2023-2045</p></div></div>
 <div class="flex gap-1"><select id="bulan" class="bg-black border border-[#2a3d35] rounded-xl px-2 py-2 text-xs"></select><button id="pinBtn" class="bg-black border border-[#2a3d35] rounded-xl px-2 py-2 text-xs">🔒</button></div>
 </div>
+<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3"><div class="flex gap-2"><div class="flex-1"><p class="text-[10px] text-zinc-400">Nominal</p><div class="flex gap-1 mt-1"><input id="nominalInput" type="number" class="w-full bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-xs"><button id="saveNom" class="bg-[#1DB99A] text-black px-3 rounded-xl text-xs font-bold">OK</button></div></div><div class="flex-1"><p class="text-[10px] text-zinc-400">Saldo Awal</p><div class="mt-1 bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-xs"><span id="saldoAwalTxt">Rp 0</span></div></div></div></div>
+<div class="grid grid-cols-2 gap-2 mt-3"><div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35]"><p class="text-[10px] text-zinc-400">Masuk</p><p id="masuk" class="font-bold text-emerald-400 text-sm truncate">Rp 0</p><p id="detail" class="text-[9px] text-zinc-500 truncate"></p></div><div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35]"><p class="text-[10px] text-zinc-400">Keluar</p><p id="keluar" class="font-bold text-red-400 text-sm truncate">Rp 0</p></div><div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35]"><p class="text-[10px] text-zinc-400">Sisa</p><p id="sisa" class="font-bold text-sm truncate">Rp 0</p></div><div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35]"><p class="text-[10px] text-zinc-400">Progress</p><p id="prog" class="font-bold text-sm">0%</p><div class="w-full h-2 bg-black rounded-full mt-1 overflow-hidden"><div id="bar" class="h-2 bg-[#1DB99A] rounded-full" style="width:0%"></div></div></div></div>
+<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3"><div class="flex justify-between"><p class="text-xs font-semibold">Grafik</p><button id="qrBtn" class="text-[10px] bg-black border border-[#2a3d35] px-2 py-1 rounded-full">QR</button></div><div class="w-full mt-2"><canvas id="grafik" height="130"></canvas></div><div class="flex gap-2 mt-2"><button id="waBtn" class="flex-1 bg-[#25D366] text-black font-bold py-2 rounded-xl text-[11px]">📲 WA</button><button id="csvBtn" class="flex-1 bg-black border border-[#2a3d35] py-2 rounded-xl text-[11px]">📄 CSV</button></div></div>
+<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3"><p class="text-xs font-semibold mb-2">Pengeluaran</p><div class="flex gap-2"><input id="jDesc" placeholder="Keterangan" class="flex-1 bg-black border border-[#2a3d35] rounded-xl px-3 py-2.5 text-xs"><input id="jNom" type="number" placeholder="Rp" class="w-20 bg-black border border-[#2a3d35] rounded-xl px-2 py-2.5 text-xs"></div><button id="jBtn" class="w-full mt-2 bg-[#1DB99A] text-black font-bold py-2.5 rounded-xl text-xs">+ Tambah</button><div id="jList" class="mt-3 space-y-2"></div></div>
+<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3"><div class="flex justify-between items-center mb-3"><p class="text-xs font-semibold">94 Mahasiswa - Edit ✏️ | Hapus 🗑️ | Klik nama=riwayat</p><button id="aBtn" class="text-[10px] bg-black border border-[#2a3d35] px-3 py-1.5 rounded-full">+ Tambah</button></div><input id="cari" placeholder="Cari..." class="w-full bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-xs mb-2"><select id="filter" class="w-full bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-xs mb-3"><option>Semua</option><option>Cash</option><option>TF</option><option>Belum</option></select><div id="aList" class="space-y-2 max-h-[700px] overflow-auto"></div></div>
+<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3"><p class="text-xs font-semibold mb-2">Rekap</p><table class="w-full text-[11px] table-fixed"><thead class="text-zinc-500 text-[10px]"><tr><th class="text-left w-[28%]">Bulan</th><th class="text-right w-[24%]">Masuk</th><th class="text-right w-[24%]">Keluar</th><th class="text-right w-[24%]">Sisa</th></tr></thead><tbody id="rekap"></tbody></table></div></div>
 
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3">
-<div class="flex gap-2">
-<div class="flex-1"><p class="text-[10px] text-zinc-400">Nominal Bulan Ini</p><div class="flex gap-1 mt-1"><input id="nominalInput" type="number" class="w-full bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-xs"><button id="saveNom" class="bg-[#1DB99A] text-black px-3 rounded-xl text-xs font-bold">OK</button></div></div>
-<div class="flex-1"><p class="text-[10px] text-zinc-400">Saldo Awal</p><div class="mt-1 bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-xs"><span id="saldoAwalTxt">Rp 0</span></div></div>
-</div>
-</div>
-
-<div class="grid grid-cols-2 gap-2 mt-3">
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] overflow-hidden"><p class="text-[10px] text-zinc-400">Masuk</p><p id="masuk" class="font-bold text-emerald-400 text-sm truncate">Rp 0</p><p id="detail" class="text-[9px] text-zinc-500 truncate"></p></div>
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] overflow-hidden"><p class="text-[10px] text-zinc-400">Keluar</p><p id="keluar" class="font-bold text-red-400 text-sm truncate">Rp 0</p></div>
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] overflow-hidden"><p class="text-[10px] text-zinc-400">Sisa</p><p id="sisa" class="font-bold text-sm truncate">Rp 0</p></div>
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] overflow-hidden"><p class="text-[10px] text-zinc-400">Progress</p><p id="prog" class="font-bold text-sm">0%</p><div class="w-full h-2 bg-black rounded-full mt-1 overflow-hidden"><div id="bar" class="h-2 bg-[#1DB99A] rounded-full" style="width:0%"></div></div></div>
-</div>
-
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3 overflow-hidden">
-<div class="flex justify-between"><p class="text-xs font-semibold">Grafik 6 Bulan</p><button id="qrBtn" class="text-[10px] bg-black border border-[#2a3d35] px-2 py-1 rounded-full">QR</button></div>
-<div class="w-full mt-2"><canvas id="grafik" height="130"></canvas></div>
-<div class="flex gap-2 mt-2"><button id="waBtn" class="flex-1 bg-[#25D366] text-black font-bold py-2 rounded-xl text-[11px]">📲 Share WA</button><button id="csvBtn" class="flex-1 bg-black border border-[#2a3d35] py-2 rounded-xl text-[11px]">📄 CSV</button></div>
-</div>
-
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3 overflow-hidden">
-<p class="text-xs font-semibold mb-2">Pengeluaran</p>
-<div class="flex gap-2"><input id="jDesc" placeholder="Keterangan" class="flex-1 min-w-0 bg-black border border-[#2a3d35] rounded-xl px-3 py-2.5 text-xs"><input id="jNom" type="number" placeholder="Rp" class="w-20 bg-black border border-[#2a3d35] rounded-xl px-2 py-2.5 text-xs"></div>
-<button id="jBtn" class="w-full mt-2 bg-[#1DB99A] text-black font-bold py-2.5 rounded-xl text-xs">+ Tambah</button>
-<div id="jList" class="mt-3 space-y-2"></div>
-</div>
-
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3 overflow-hidden">
-<div class="flex justify-between items-center mb-3 gap-2"><p class="text-xs font-semibold truncate">94 Mahasiswa (A-Z) - Klik nama = riwayat</p><button id="aBtn" class="shrink-0 text-[10px] bg-black border border-[#2a3d35] px-3 py-1.5 rounded-full">+ Tambah</button></div>
-<input id="cari" placeholder="Cari nama..." class="w-full bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-xs mb-2">
-<select id="filter" class="w-full bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-xs mb-3"><option>Semua</option><option>Cash</option><option>TF</option><option>Belum</option></select>
-<div id="aList" class="space-y-2 max-h-[600px] overflow-auto pr-1"></div>
-</div>
-
-<div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3 overflow-hidden">
-<p class="text-xs font-semibold mb-2">Rekap 6 Bulan</p><table class="w-full text-[11px] table-fixed"><thead class="text-zinc-500 text-[10px]"><tr><th class="text-left w-[28%]">Bulan</th><th class="text-right w-[24%]">Masuk</th><th class="text-right w-[24%]">Keluar</th><th class="text-right w-[24%]">Sisa</th></tr></thead><tbody id="rekap"></tbody></table>
-</div>
-<p class="text-center text-[9px] text-zinc-600 mt-6">KasKita 94 Mahasiswa 2023-2045 | PIN: 12344321 | by Beben</p>
-</div>
-
-<div id="modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50"><div class="bg-[#1E2E2A] border border-[#2a3d35] rounded-2xl p-4 w-full max-w-[340px]"><p class="text-sm font-semibold">Bayar: <span id="modalNama"></span></p><div class="mt-3 grid grid-cols-2 gap-2"><button id="pilihCash" class="py-3 rounded-xl bg-amber-400 text-black font-bold text-xs">💵 CASH</button><button id="pilihTF" class="py-3 rounded-xl bg-sky-400 text-black font-bold text-xs">🏦 TRANSFER</button></div><div id="buktiBox" class="mt-3 hidden"><p class="text-[10px] text-zinc-400 mb-1">Upload Bukti TF</p><input id="buktiInput" type="file" accept="image/*" class="w-full text-[10px] bg-black border border-[#2a3d35] rounded-xl p-2"><img id="buktiPrev" class="mt-2 w-full rounded-xl hidden max-h-[150px] object-cover"></div><div class="flex gap-2 mt-3"><button id="pilihReset" class="flex-1 py-2 rounded-xl bg-zinc-800 text-xs">Reset Belum</button><button id="modalClose" class="flex-1 py-2 rounded-xl bg-black border border-[#2a3d35] text-xs">Tutup</button></div></div></div>
+<div id="modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50"><div class="bg-[#1E2E2A] border border-[#2a3d35] rounded-2xl p-4 w-full max-w-[340px]"><p class="text-sm font-semibold">Bayar: <span id="modalNama"></span></p><div class="mt-3 grid grid-cols-2 gap-2"><button id="pilihCash" class="py-3 rounded-xl bg-amber-400 text-black font-bold text-xs">💵 CASH</button><button id="pilihTF" class="py-3 rounded-xl bg-sky-400 text-black font-bold text-xs">🏦 TF</button></div><div id="buktiBox" class="mt-3 hidden"><p class="text-[10px] text-zinc-400 mb-1">Bukti TF</p><input id="buktiInput" type="file" accept="image/*" class="w-full text-[10px] bg-black border border-[#2a3d35] rounded-xl p-2"><img id="buktiPrev" class="mt-2 w-full rounded-xl hidden max-h-[150px] object-cover"></div><div class="flex gap-2 mt-3"><button id="pilihReset" class="flex-1 py-2 rounded-xl bg-zinc-800 text-xs">Reset</button><button id="modalClose" class="flex-1 py-2 rounded-xl bg-black border border-[#2a3d35] text-xs">Tutup</button></div></div></div>
 <div id="riwayatModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50"><div class="bg-[#1E2E2A] border border-[#2a3d35] rounded-2xl p-4 w-full max-w-[340px] max-h-[80vh] overflow-auto"><p class="text-sm font-bold">Riwayat: <span id="riwayatNama"></span></p><div id="riwayatList" class="mt-3 space-y-2 text-xs"></div><button id="riwayatClose" class="w-full mt-3 py-2 bg-black border border-[#2a3d35] rounded-xl text-xs">Tutup</button></div></div>
-<div id="pinModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50"><div class="bg-[#1E2E2A] border border-[#2a3d35] rounded-2xl p-4 w-full max-w-[300px] text-center"><p class="text-sm font-semibold">Mode Bendahara</p><p class="text-[10px] text-zinc-400 mt-1">PIN: 12344321</p><input id="pinInput" type="password" placeholder="Masukin PIN" class="w-full mt-3 bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-sm text-center"><button id="pinOk" class="w-full mt-2 bg-[#1DB99A] text-black font-bold py-2 rounded-xl text-xs">Buka</button><button id="pinCancel" class="w-full mt-2 text-[10px] text-zinc-500">Batal</button></div></div>
-<div id="qrModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50"><div class="bg-white rounded-2xl p-4 w-full max-w-[280px] text-center text-black"><p class="text-sm font-bold">QR Bayar Kas</p><p class="text-[11px] mt-1">Nominal: <b id="qrNom">Rp 10.000</b></p><div class="mt-3 bg-black text-white p-3 rounded-xl text-[10px] break-all">BANK JAGO / DANA: 08xx - a.n Beben<br>TF lalu upload bukti</div><button id="qrClose" class="w-full mt-3 py-2 bg-black text-white rounded-xl text-xs">Tutup</button></div></div>
+<div id="pinModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50"><div class="bg-[#1E2E2A] border border-[#2a3d35] rounded-2xl p-4 w-full max-w-[300px] text-center"><p class="text-sm font-semibold">Mode Bendahara</p><p class="text-[10px] text-zinc-400">PIN: 12344321</p><input id="pinInput" type="password" placeholder="PIN" class="w-full mt-3 bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-sm text-center"><button id="pinOk" class="w-full mt-2 bg-[#1DB99A] text-black font-bold py-2 rounded-xl text-xs">Buka</button><button id="pinCancel" class="w-full mt-2 text-[10px] text-zinc-500">Batal</button></div></div>
+<div id="qrModal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50"><div class="bg-white rounded-2xl p-4 w-full max-w-[280px] text-center text-black"><p class="text-sm font-bold">QR Bayar</p><p class="text-[11px] mt-1">Nominal: <b id="qrNom">Rp 10.000</b></p><div class="mt-3 bg-black text-white p-3 rounded-xl text-[10px]">BANK JAGO / DANA: 08xx - a.n Beben</div><button id="qrClose" class="w-full mt-3 py-2 bg-black text-white rounded-xl text-xs">Tutup</button></div></div>
 
 <script>
 const DEFAULT_94 = ["ADITYA GERARDI SUDRAJAT","AGUS","AHMAD ILHAM","ALFIAN RAYHANSYAH","ALGY AHADIAREZA","ALIKIA ZAKIA","ANGGA INDRA RAMADAN","ARIVIARANI SYAFA GAYATRI","ARYA PUTRA PUTRA HAKIM","ASEP SUKARYA","ASEP ZIDAN BUKHORI","ATHAYA SABIAN ZAKI","AZNI NUR ISNA","BERNADUS WIDI NUGROHO","CHRISTIANO ANUGERAH","DAFFA DHIYA ULHAQ","DAVID ALVILA","ELZA SEPTIANI PUTRI","ERRO AN FARE RAMADO MAYDA NUGROHO","ESA AMALADINA SAPUTRA","EZAR RAHMATULLAH SUGIRI","FAADHILAH SYADZWANA","FADILLA ZUHRO","FAISAL RIZKY ADITYA","FAJAR RAMADHAN","FARID DIANSYAH","FATIH FADHLULLAH","FAUZIAH NUR FADILLAH","FEBRIO SATRIA NUGROHO","GABRIEL SINA DOREN","GITHSA ASTYLA","HABI NURRAHMAN","HADI FAUZAN AL HABBY","HASBY ASSIDDIEQY","HIKARI JIBRIELSH AL ATHA","HILMAN RUSYAD","HUDIAT","IQBAL FAUZAN","JHON BOSCO EGNASIUS LAORENS","JINGGA DIMASEKA SADURRANDO","KAILA ANARGHIA HUSEN","KAINDRA AZYIEL SONJAYA","KHALIDYATUL RIZKY","LUTHFI ABDUL MALIK AL FAIQ","M. BINTANG AFLIANSYAH AFROZI","MAGDALENA OCTAFIANI SINAGA","MAULANA YUSUF FATAHILAH","MOCH N AFZANDRA","MOHAMMAD NURHIDAYAT ALAMSYAH","MUH ALLEN YUTONIO","MUHAMAD ARYA JAMIL","MUHAMAD DHEKIA ALFARIDZA","MUHAMAD SADAM SISWANTO","MUHAMMAD AFZAL FAHRIANA","MUHAMMAD ANDRE","MUHAMMAD FAJRIAN HIDAYATULLAH","MUHAMMAD FARHAN","MUHAMMAD GEVI JULIANDA","MUHAMMAD RAFIF RIZQULLAH","MUHAMMAD SALMAN AL FARISI","NADA WAFIQ ASHAFA","NANDA AMELIA PUTRI","NANDHIKA DIEGA PRATAMA","NAUFAL IBNU HANIF","NIKO ALVIN","NOVA","NOVIAN PRATMOJO","NUR SAHARA","OMAR TERRY PUTRA","PAJAR SIDIK","PINGKA SALEEMAH PINGKA","RACHEL LINGZA","RAFFY NASYEH KHUDIN","RAFIQ AHMAD NAUFAL","RANGGA FERDIANA","RIADI FASEH NURZAMAN","RIFA NAILA LUQYANA","RIZKY HENDRIAN","ROHIM NURHAYAT","ROIHAN NURDIKA YUSUF","RUBENSTEIN ELBERT MANALU","RULLY AMELIA","SABIL ALBAIHAQI","SAIFUL JAMIL","SALWA ALIKHA","SINGGAH SINDUDHARMA","SUHADA AHMAD DINULLAH","SUKMA AYU","SULHAN MUHAMMAD RIZKI","SYAMILA KHAIRIYA","TIARA ALIFA HARRYATUL","VICY SALMA VATYA ANJANI","WULANDARI SELVI SOVIANA","ZAYYINI DZIKRI AMRULLOH"];
-
 let anggota=JSON.parse(localStorage.getItem('anggota')||'null') || DEFAULT_94;
-if(JSON.parse(localStorage.getItem('anggota')||'null')===null || JSON.parse(localStorage.getItem('anggota')||'[]').length < 90){ anggota = DEFAULT_94; localStorage.setItem('anggota', JSON.stringify(anggota)); }
-
-let bayar=JSON.parse(localStorage.getItem('bayar')||'{}');
-let keluarData=JSON.parse(localStorage.getItem('keluarData')||'{}');
-let nominalData=JSON.parse(localStorage.getItem('nominalData')||'{}');
-let buktiData=JSON.parse(localStorage.getItem('buktiData')||'{}');
-let curBulan=new Date().toISOString().slice(0,7);
-let curNama=null; let isBendahara=localStorage.getItem('bendahara')==='1';
-let PIN='12344321';
+if((JSON.parse(localStorage.getItem('anggota')||'null')||[]).length<90){anggota=DEFAULT_94;localStorage.setItem('anggota',JSON.stringify(anggota));}
+let bayar=JSON.parse(localStorage.getItem('bayar')||'{}');let keluarData=JSON.parse(localStorage.getItem('keluarData')||'{}');let nominalData=JSON.parse(localStorage.getItem('nominalData')||'{}');let buktiData=JSON.parse(localStorage.getItem('buktiData')||'{}');
+let curBulan=new Date().toISOString().slice(0,7);let curNama=null;let isBendahara=localStorage.getItem('bendahara')==='1';let PIN='12344321';
 function save(){localStorage.setItem('anggota',JSON.stringify(anggota));localStorage.setItem('bayar',JSON.stringify(bayar));localStorage.setItem('keluarData',JSON.stringify(keluarData));localStorage.setItem('nominalData',JSON.stringify(nominalData));localStorage.setItem('buktiData',JSON.stringify(buktiData))}
-function fmtB(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
-function parseB(s){let[y,m]=s.split('-').map(Number);return new Date(y,m-1,1)}
-function namaB(d){return d.toLocaleDateString('id-ID',{month:'short',year:'numeric'})}
-function getNom(){return nominalData[curBulan]||10000}
-function getSaldoAwal(){let cur=parseB(curBulan);let prev=new Date(cur.getFullYear(),cur.getMonth()-1,1);let k=fmtB(prev);let b=bayar[k]||{};let nom=nominalData[k]||10000;let masuk=Object.values(b).filter(v=>v!='Belum').length*nom;let kel=(keluarData[k]||[]).reduce((s,e)=>s+e.nom,0);return Math.max(0,masuk-kel)}
-let sel=document.getElementById('bulan');for(let y=2023;y<=2045;y++)for(let m=0;m<12;m++){let d=new Date(y,m,1);let v=fmtB(d);let o=document.createElement('option');o.value=v;o.textContent=namaB(d);if(v==curBulan)o.selected=true;sel.appendChild(o)}
-sel.onchange=e=>{curBulan=e.target.value;render()};
-function statusBayar(n){return(bayar[curBulan]||{})[n]||'Belum'}
-function listKeluar(){return keluarData[curBulan]||[]}
-
+function fmtB(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}function parseB(s){let[y,m]=s.split('-').map(Number);return new Date(y,m-1,1)}function namaB(d){return d.toLocaleDateString('id-ID',{month:'short',year:'numeric'})}function getNom(){return nominalData[curBulan]||10000}function getSaldoAwal(){let cur=parseB(curBulan);let prev=new Date(cur.getFullYear(),cur.getMonth()-1,1);let k=fmtB(prev);let b=bayar[k]||{};let nom=nominalData[k]||10000;let masuk=Object.values(b).filter(v=>v!='Belum').length*nom;let kel=(keluarData[k]||[]).reduce((s,e)=>s+e.nom,0);return Math.max(0,masuk-kel)}
+let sel=document.getElementById('bulan');for(let y=2023;y<=2045;y++)for(let m=0;m<12;m++){let d=new Date(y,m,1);let v=fmtB(d);let o=document.createElement('option');o.value=v;o.textContent=namaB(d);if(v==curBulan)o.selected=true;sel.appendChild(o)}sel.onchange=e=>{curBulan=e.target.value;render()};
+function statusBayar(n){return(bayar[curBulan]||{})[n]||'Belum'}function listKeluar(){return keluarData[curBulan]||[]}
 function renderAnggota(){
 let q=(document.getElementById('cari').value||'').toLowerCase();let f=document.getElementById('filter').value;
 let list=document.getElementById('aList');list.innerHTML='';
@@ -90,18 +42,23 @@ anggota.filter(n=>n.toLowerCase().includes(q)).filter(n=>{let s=statusBayar(n);i
 let s=statusBayar(n);
 let div=document.createElement('div');div.className='flex items-center justify-between bg-black border border-[#2a3d35] rounded-xl px-3 py-2.5 gap-2';
 let left=document.createElement('div');left.className='flex items-center gap-2 min-w-0 flex-1 cursor-pointer';
-let nameSpan=document.createElement('span');nameSpan.className='text-xs font-medium truncate';nameSpan.textContent=n;nameSpan.title=n;
-nameSpan.onclick=()=>showRiwayat(n);
+let nameSpan=document.createElement('span');nameSpan.className='text-xs font-medium truncate';nameSpan.textContent=n;nameSpan.onclick=()=>showRiwayat(n);
 let st=document.createElement('span');st.className='shrink-0 text-[8px] px-2 py-1 rounded-full '+(s=='Cash'?'bg-amber-400 text-black':s=='TF'?'bg-sky-400 text-black':'bg-zinc-700 text-zinc-300');st.textContent=s;
 left.appendChild(nameSpan);left.appendChild(st);
 let right=document.createElement('div');right.className='flex items-center gap-1 shrink-0';
-let bayarBtn=document.createElement('button');
-if(s!='Belum'){bayarBtn.className='w-7 h-7 flex items-center justify-center rounded-full bg-[#1DB99A] text-black font-bold text-[12px]';bayarBtn.textContent='✓';}else{bayarBtn.className='text-[10px] font-bold bg-[#1DB99A] text-black px-3 py-1.5 rounded-full';bayarBtn.textContent='Bayar';}
+let bayarBtn=document.createElement('button');if(s!='Belum'){bayarBtn.className='w-7 h-7 flex items-center justify-center rounded-full bg-[#1DB99A] text-black font-bold text-[12px]';bayarBtn.textContent='✓';}else{bayarBtn.className='text-[10px] font-bold bg-[#1DB99A] text-black px-3 py-1.5 rounded-full';bayarBtn.textContent='Bayar';}
 bayarBtn.onclick=()=>{curNama=n;document.getElementById('modalNama').textContent=n;document.getElementById('buktiBox').classList.add('hidden');document.getElementById('buktiPrev').classList.add('hidden');document.getElementById('modal').classList.remove('hidden');document.getElementById('modal').classList.add('flex')};
-let del=document.createElement('button');del.textContent='🗑️';del.className='text-[14px] px-1';
-if(!isBendahara)del.classList.add('opacity-20','pointer-events-none');
-del.onclick=()=>{if(confirm('Hapus '+n+'?')){anggota=anggota.filter(x=>x!=n);save();render()}};
-right.appendChild(bayarBtn);right.appendChild(del);
+let edit=document.createElement('button');edit.textContent='✏️';edit.className='text-[13px] px-1';if(!isBendahara)edit.classList.add('opacity-20','pointer-events-none');
+edit.onclick=()=>{
+  let baru=prompt('Edit nama "'+n+'":', n);
+  if(!baru)return;baru=baru.trim();if(!baru||baru===n)return;
+  if(anggota.includes(baru))return alert('Nama "'+baru+'" udah ada!');
+  for(let k in bayar){ if(bayar[k][n]){ bayar[k][baru]=bayar[k][n]; delete bayar[k][n]; } }
+  for(let k in buktiData){ if(buktiData[k]?.[n]){ if(!buktiData[k])buktiData[k]={}; buktiData[k][baru]=buktiData[k][n]; delete buktiData[k][n]; } }
+  anggota[anggota.indexOf(n)]=baru;anggota.sort((a,b)=>a.localeCompare(b));save();render();
+};
+let del=document.createElement('button');del.textContent='🗑️';del.className='text-[14px] px-1';if(!isBendahara)del.classList.add('opacity-20','pointer-events-none');del.onclick=()=>{if(confirm('Hapus '+n+'?')){anggota=anggota.filter(x=>x!=n);save();render()}};
+right.appendChild(bayarBtn);right.appendChild(edit);right.appendChild(del);
 div.appendChild(left);div.appendChild(right);list.appendChild(div);
 })}
 function renderKeluar(){let list=document.getElementById('jList');list.innerHTML='';listKeluar().forEach((e,i)=>{let div=document.createElement('div');div.className='flex justify-between items-center bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-[11px] gap-2';let s=document.createElement('span');s.className='truncate flex-1';s.textContent=e.desc+' - Rp '+e.nom.toLocaleString('id-ID');let b=document.createElement('button');b.textContent='hapus';b.className='text-[10px] text-red-400 border border-red-900 px-2 py-1 rounded-full';if(!isBendahara)b.classList.add('opacity-20','pointer-events-none');b.onclick=()=>{keluarData[curBulan].splice(i,1);save();render()};div.appendChild(s);div.appendChild(b);list.appendChild(div)})}
@@ -110,18 +67,18 @@ function renderGrafik(){let cur=parseB(curBulan);let months=[];for(let i=5;i>=0;
 function renderRekap(){let tb=document.getElementById('rekap');tb.innerHTML='';let cur=parseB(curBulan);for(let i=5;i>=0;i--){let d=new Date(cur.getFullYear(),cur.getMonth()-i,1);let k=fmtB(d);let b=bayar[k]||{};let nom=nominalData[k]||10000;let masuk=Object.values(b).filter(v=>v!='Belum').length*nom;let kel=(keluarData[k]||[]).reduce((s,e)=>s+e.nom,0);let tr=document.createElement('tr');tr.className='border-t border-[#2a3d35]';tr.innerHTML=`<td class="py-2 truncate">${namaB(d)}</td><td class="text-right text-emerald-400 truncate">Rp ${masuk.toLocaleString('id-ID')}</td><td class="text-right text-red-400 truncate">Rp ${kel.toLocaleString('id-ID')}</td><td class="text-right font-bold truncate">Rp ${(masuk-kel).toLocaleString('id-ID')}</td>`;tb.appendChild(tr)}}
 function render(){document.getElementById('nominalInput').value=getNom();renderAnggota();renderKeluar();renderKartu();renderGrafik();renderRekap();document.getElementById('pinBtn').textContent=isBendahara?'🔓':'🔒'}
 document.getElementById('cari').oninput=renderAnggota;document.getElementById('filter').onchange=renderAnggota;
-document.getElementById('jBtn').onclick=()=>{if(!isBendahara)return alert('Mode bendahara dulu (PIN 12344321)');let desc=document.getElementById('jDesc').value.trim();let nom=parseInt(document.getElementById('jNom').value)||0;if(!desc||!nom)return alert('Isi keterangan & nominal');if(!keluarData[curBulan])keluarData[curBulan]=[];keluarData[curBulan].push({desc,nom});document.getElementById('jDesc').value='';document.getElementById('jNom').value='';save();render()};
-document.getElementById('aBtn').onclick=()=>{if(!isBendahara)return alert('Mode bendahara dulu');let raw=prompt('Nama anggota:');if(!raw)return;let n=raw.trim();if(!n)return;if(anggota.includes(n))return alert('Udah ada!');anggota.push(n);anggota.sort((a,b)=>a.localeCompare(b));save();render()};
-document.getElementById('saveNom').onclick=()=>{if(!isBendahara)return alert('Mode bendahara dulu');let v=parseInt(document.getElementById('nominalInput').value)||10000;nominalData[curBulan]=v;save();render()};
+document.getElementById('jBtn').onclick=()=>{if(!isBendahara)return alert('PIN dulu 12344321');let desc=document.getElementById('jDesc').value.trim();let nom=parseInt(document.getElementById('jNom').value)||0;if(!desc||!nom)return alert('Isi keterangan & nominal');if(!keluarData[curBulan])keluarData[curBulan]=[];keluarData[curBulan].push({desc,nom});document.getElementById('jDesc').value='';document.getElementById('jNom').value='';save();render()};
+document.getElementById('aBtn').onclick=()=>{if(!isBendahara)return alert('PIN dulu');let raw=prompt('Nama anggota:');if(!raw)return;let n=raw.trim();if(!n)return;if(anggota.includes(n))return alert('Udah ada!');anggota.push(n);anggota.sort((a,b)=>a.localeCompare(b));save();render()};
+document.getElementById('saveNom').onclick=()=>{if(!isBendahara)return alert('PIN dulu');let v=parseInt(document.getElementById('nominalInput').value)||10000;nominalData[curBulan]=v;save();render()};
 document.getElementById('waBtn').onclick=()=>{let r=renderKartu();let b=bayar[curBulan]||{};let list=anggota.map(n=>`${n}: ${b[n]||'Belum'}`).join('\n');let txt=`*KasKita 94 - ${namaB(parseB(curBulan))}*\nNominal: Rp ${getNom().toLocaleString('id-ID')}\nSaldo Awal: Rp ${r.saldoAwal.toLocaleString('id-ID')}\nMasuk: Rp ${r.masuk.toLocaleString('id-ID')}\nKeluar: Rp ${r.keluar.toLocaleString('id-ID')}\nSisa: Rp ${r.sisa.toLocaleString('id-ID')}\nProgress: ${r.prog}%\n\n${list}`;window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank')};
-document.getElementById('csvBtn').onclick=()=>{let csv='Bulan,Anggota,Status,Nominal\n';for(let k in bayar){for(let n in bayar[k]){csv+=`${k},${n},${bayar[k][n]},${nominalData[k]||10000}\n`}}let blob=new Blob([csv],{type:'text/csv'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='kas-94.csv';a.click()};
+document.getElementById('csvBtn').onclick=()=>{let csv='Bulan,Anggota,Status,Nominal\n';for(let k in bayar){for(let n in bayar[k]){csv+=`${k},${n},${bayar[k][n]},${nominalData[k]||10000}\n`}}let blob=new Blob([csv],{type:'text/csv'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='kas.csv';a.click()};
 function showRiwayat(n){document.getElementById('riwayatNama').textContent=n;let div=document.getElementById('riwayatList');div.innerHTML='';for(let y=2023;y<=2045;y++)for(let m=0;m<12;m++){let d=new Date(y,m,1);let k=fmtB(d);let st=(bayar[k]||{})[n];if(st){let row=document.createElement('div');row.className='flex justify-between bg-black border border-[#2a3d35] rounded-xl px-3 py-2';row.innerHTML=`<span>${namaB(d)}</span><span class="${st=='Cash'?'text-amber-400':st=='TF'?'text-sky-400':'text-zinc-500'}">${st}</span>`;div.appendChild(row)}}if(!div.innerHTML)div.innerHTML='<p class="text-zinc-500">Belum ada riwayat</p>';document.getElementById('riwayatModal').classList.remove('hidden');document.getElementById('riwayatModal').classList.add('flex')}
 document.getElementById('riwayatClose').onclick=()=>{document.getElementById('riwayatModal').classList.add('hidden');document.getElementById('riwayatModal').classList.remove('flex')};
 function closeModal(){document.getElementById('modal').classList.add('hidden');document.getElementById('modal').classList.remove('flex');document.getElementById('buktiBox').classList.add('hidden')}
 document.getElementById('modalClose').onclick=closeModal;document.getElementById('modal').onclick=e=>{if(e.target.id=='modal')closeModal()};
 document.getElementById('pilihCash').onclick=()=>{if(!bayar[curBulan])bayar[curBulan]={};bayar[curBulan][curNama]='Cash';save();render();closeModal()};
 document.getElementById('pilihTF').onclick=()=>{if(!bayar[curBulan])bayar[curBulan]={};bayar[curBulan][curNama]='TF';document.getElementById('buktiBox').classList.remove('hidden')};
-document.getElementById('pilihReset').onclick=()=>{if(!isBendahara)return alert('Mode bendahara dulu');if(bayar[curBulan])delete bayar[curBulan][curNama];save();render();closeModal()};
+document.getElementById('pilihReset').onclick=()=>{if(!isBendahara)return alert('PIN dulu');if(bayar[curBulan])delete bayar[curBulan][curNama];save();render();closeModal()};
 document.getElementById('buktiInput').onchange=e=>{let file=e.target.files[0];if(!file)return;let r=new FileReader();r.onload=()=>{if(!buktiData[curBulan])buktiData[curBulan]={};buktiData[curBulan][curNama]=r.result;document.getElementById('buktiPrev').src=r.result;document.getElementById('buktiPrev').classList.remove('hidden');save();render()};r.readAsDataURL(file)};
 document.getElementById('pinBtn').onclick=()=>{document.getElementById('pinModal').classList.remove('hidden');document.getElementById('pinModal').classList.add('flex')};
 document.getElementById('pinOk').onclick=()=>{if(document.getElementById('pinInput').value==PIN){isBendahara=true;localStorage.setItem('bendahara','1');document.getElementById('pinModal').classList.add('hidden');document.getElementById('pinModal').classList.remove('flex');render()}else alert('PIN salah')};
