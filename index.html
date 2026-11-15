@@ -2,82 +2,127 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KasKita - Kas Bulanan</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>KasKita Fixed Portrait</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-<style>body{font-family:'Poppins',sans-serif;background:#0F1A14;color:white}</style>
+<style>
+body{font-family:'Poppins',sans-serif;background:#0F1A14;color:white}
+*{-webkit-tap-highlight-color: transparent;}
+canvas{max-width:100%}
+</style>
 </head>
-<body>
-<div class="max-w-5xl mx-auto p-4">
+<body class="min-h-screen">
+<div class="w-full max-w-[480px] mx-auto p-3 pb-20">
+
 <!-- HEADER -->
-<div class="bg-[#1E2E2A] p-4 rounded-2xl flex justify-between items-center border border-[#2a3d35]">
-<div class="flex gap-3 items-center">
-<div class="w-9 h-9 bg-[#1DB99A] rounded-xl flex items-center justify-center font-bold text-black">$</div>
-<div><h1 class="font-bold">KasKita</h1><p class="text-[10px] text-zinc-400">by Beben</p></div>
+<div class="bg-[#1E2E2A] p-3 rounded-2xl border border-[#2a3d35]">
+<div class="flex justify-between items-center">
+<div class="flex gap-2 items-center"><div class="w-8 h-8 bg-[#1DB99A] rounded-xl flex items-center justify-center font-bold text-black">$</div><div><h1 class="font-bold text-sm">KasKita</h1><p class="text-[9px] text-zinc-400">Portrait Fix by Beben</p></div></div>
+<select id="bulan" class="bg-black border border-[#2a3d35] rounded-xl px-2 py-2 text-xs max-w-[120px]"></select>
 </div>
-<select id="bulan" class="bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-sm"></select>
 </div>
 
-<!-- 4 KARTU -->
-<div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
-<div class="bg-[#1E2E2A] p-4 rounded-2xl border border-[#2a3d35]"><p class="text-xs text-zinc-400">Masuk</p><p id="masuk" class="font-bold text-emerald-400 text-lg">Rp 0</p><p id="detail" class="text-[10px] text-zinc-500">Cash 0 | TF 0</p></div>
-<div class="bg-[#1E2E2A] p-4 rounded-2xl border border-[#2a3d35]"><p class="text-xs text-zinc-400">Keluar</p><p id="keluar" class="font-bold text-red-400 text-lg">Rp 0</p></div>
-<div class="bg-[#1E2E2A] p-4 rounded-2xl border border-[#2a3d35]"><p class="text-xs text-zinc-400">Sisa</p><p id="sisa" class="font-bold text-lg">Rp 0</p></div>
-<div class="bg-[#1E2E2A] p-4 rounded-2xl border border-[#2a3d35]"><p class="text-xs text-zinc-400">Progress</p><p id="prog" class="font-bold text-lg">0%</p><div class="w-full h-2 bg-black rounded-full mt-1"><div id="bar" class="h-2 bg-[#1DB99A] rounded-full" style="width:0%"></div></div></div>
+<!-- 4 KARTU - 2 KOLOM PAS HP -->
+<div class="grid grid-cols-2 gap-2 mt-3">
+<div class="bg-[#1E2E2A] p-3 rounded-2xl border border-[#2a3d35]"><p class="text-[10px] text-zinc-400">Masuk</p><p id="masuk" class="font-bold text-emerald-400 text-[15px]">Rp 0</p><p id="detail" class="text-[9px] text-zinc-500">Cash 0 | TF 0</p></div>
+<div class="bg-[#1E2E2A] p-3 rounded-2xl border border-[#2a3d35]"><p class="text-[10px] text-zinc-400">Keluar</p><p id="keluar" class="font-bold text-red-400 text-[15px]">Rp 0</p><p class="text-[9px] text-zinc-500">Bulan ini</p></div>
+<div class="bg-[#1E2E2A] p-3 rounded-2xl border border-[#2a3d35]"><p class="text-[10px] text-zinc-400">Sisa Saldo</p><p id="sisa" class="font-bold text-[15px]">Rp 0</p><p class="text-[9px] text-zinc-500">Masuk - Keluar</p></div>
+<div class="bg-[#1E2E2A] p-3 rounded-2xl border border-[#2a3d35]"><p class="text-[10px] text-zinc-400">Progress</p><p id="prog" class="font-bold text-[15px]">0%</p><div class="w-full h-2 bg-black rounded-full mt-1"><div id="bar" class="h-2 bg-[#1DB99A] rounded-full transition-all" style="width:0%"></div></div></div>
 </div>
 
 <!-- GRAFIK -->
-<div class="grid md:grid-cols-3 gap-3 mt-4">
-<div class="md:col-span-2 bg-[#1E2E2A] p-4 rounded-2xl border border-[#2a3d35]"><p class="text-sm font-semibold mb-2">Grafik 6 Bulan</p><canvas id="grafik" height="160"></canvas><div class="flex gap-3 text-[10px] mt-2"><span class="flex gap-1 items-center"><span class="w-3 h-3 bg-amber-400 rounded"></span>Cash</span><span class="flex gap-1 items-center"><span class="w-3 h-3 bg-sky-400 rounded"></span>TF</span><span class="flex gap-1 items-center"><span class="w-3 h-3 bg-red-400 rounded"></span>Keluar</span></div></div>
-<div class="bg-[#1E2E2A] p-4 rounded-2xl border border-[#2a3d35] text-center"><p class="text-sm font-semibold mb-2">Persentase</p><canvas id="donut" width="120" height="120"></canvas><p id="donutT" class="font-bold mt-2">0%</p></div>
+<div class="bg-[#1E2E2A] p-3 rounded-2xl border border-[#2a3d35] mt-3">
+<p class="text-xs font-semibold mb-2">Grafik 6 Bulan</p>
+<div class="w-full overflow-hidden"><canvas id="grafik" height="140"></canvas></div>
+<div class="flex gap-3 text-[9px] mt-2 justify-center"><span class="flex gap-1 items-center"><span class="w-3 h-3 bg-amber-400 rounded"></span>Cash</span><span class="flex gap-1 items-center"><span class="w-3 h-3 bg-sky-400 rounded"></span>TF</span><span class="flex gap-1 items-center"><span class="w-3 h-3 bg-red-400 rounded"></span>Keluar</span></div>
 </div>
 
-<!-- 2 KOLOM -->
-<div class="grid md:grid-cols-2 gap-3 mt-4">
+<div class="bg-[#1E2E2A] p-3 rounded-2xl border border-[#2a3d35] mt-3 flex items-center gap-4">
+<div><p class="text-xs font-semibold">Persentase Bayar</p><p id="donutT" class="font-bold text-2xl text-[#1DB99A]">0%</p><p class="text-[10px] text-zinc-500">dari total anggota</p></div>
+<canvas id="donut" width="80" height="80" class="ml-auto"></canvas>
+</div>
+
 <!-- PENGELUARAN -->
-<div class="bg-[#1E2E2A] p-4 rounded-2xl border border-[#2a3d35]">
-<p class="text-sm font-semibold mb-3">Tambah Pengeluaran</p>
-<div class="flex gap-2 mb-2"><input id="jDesc" placeholder="Keterangan (ex: galon)" class="flex-1 bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-sm"><input id="jNom" type="number" placeholder="Rp" class="w-28 bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-sm"></div>
-<button id="jBtn" class="w-full bg-[#1DB99A] text-black font-bold py-2 rounded-xl text-sm">+ Tambah</button>
+<div class="bg-[#1E2E2A] p-3 rounded-2xl border border-[#2a3d35] mt-3">
+<p class="text-xs font-semibold mb-3">Pengeluaran Bulan Ini</p>
+<div class="flex gap-2 mb-2">
+<input id="jDesc" placeholder="Keterangan" class="flex-1 bg-black border border-[#2a3d35] rounded-xl px-3 py-2.5 text-xs">
+<input id="jNom" type="number" placeholder="Rp" class="w-24 bg-black border border-[#2a3d35] rounded-xl px-3 py-2.5 text-xs">
+</div>
+<button id="jBtn" class="w-full bg-[#1DB99A] text-black font-bold py-2.5 rounded-xl text-xs">+ Tambah Pengeluaran</button>
 <div id="jList" class="mt-3 space-y-2"></div>
 </div>
-<!-- ANGGOTA -->
-<div class="bg-[#1E2E2A] p-4 rounded-2xl border border-[#2a3d35]">
-<div class="flex justify-between mb-3"><p class="text-sm font-semibold">Daftar Anggota</p><button id="aBtn" class="text-xs bg-black border border-[#2a3d35] px-3 py-1 rounded-full">+ Tambah</button></div>
-<input id="cari" placeholder="Cari nama..." class="w-full bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-sm mb-2">
-<select id="filter" class="w-full bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-sm mb-3"><option>Semua</option><option>Cash</option><option>TF</option><option>Belum</option></select>
-<div id="aList" class="space-y-2 max-h-[350px] overflow-auto"></div>
+
+<!-- ANGGOTA - TOMBOL CASH & TF DIPISAH -->
+<div class="bg-[#1E2E2A] p-3 rounded-2xl border border-[#2a3d35] mt-3">
+<div class="flex justify-between items-center mb-3">
+<p class="text-xs font-semibold">Daftar Anggota - Pilih Cash / TF</p>
+<button id="aBtn" class="text-[10px] bg-black border border-[#2a3d35] px-3 py-1.5 rounded-full">+ Tambah</button>
 </div>
+<div class="flex gap-2 mb-3">
+<input id="cari" placeholder="Cari nama..." class="flex-1 bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-xs">
+<select id="filter" class="bg-black border border-[#2a3d35] rounded-xl px-2 py-2 text-[10px]"><option>Semua</option><option>Cash</option><option>TF</option><option>Belum</option></select>
+</div>
+<div id="aList" class="space-y-2"></div>
 </div>
 
 <!-- REKAP -->
-<div class="bg-[#1E2E2A] p-4 rounded-2xl border border-[#2a3d35] mt-4">
-<p class="text-sm font-semibold mb-3">Rekap Per Bulan</p>
-<table class="w-full text-xs"><thead class="text-zinc-500"><tr><th class="text-left py-1">Bulan</th><th class="text-right">Masuk</th><th class="text-right">Keluar</th><th class="text-right">Sisa</th></tr></thead><tbody id="rekap"></tbody></table>
+<div class="bg-[#1E2E2A] p-3 rounded-2xl border border-[#2a3d35] mt-3">
+<p class="text-xs font-semibold mb-3">Rekap Per Bulan</p>
+<div class="overflow-x-auto -mx-3 px-3">
+<table class="w-full text-[11px] min-w-[320px]"><thead class="text-zinc-500"><tr><th class="text-left py-1">Bulan</th><th class="text-right">Masuk</th><th class="text-right">Keluar</th><th class="text-right">Sisa</th></tr></thead><tbody id="rekap"></tbody></table>
+</div>
 </div>
 
-<p class="text-center text-[10px] text-zinc-600 mt-6">by Beben dan Meta 2026</p>
+<p class="text-center text-[9px] text-zinc-600 mt-6">by Beben dan Meta 2026 - Portrait Fix</p>
 </div>
 
 <script>
-let anggota = JSON.parse(localStorage.getItem('anggota')||'["Beben","Andi","Sari","Budi","Rina","Joko"]');
-let bayar = JSON.parse(localStorage.getItem('bayar')||'{}');
-let keluarData = JSON.parse(localStorage.getItem('keluarData')||'{}');
-let curBulan = new Date().toISOString().slice(0,7);
-let NOMINAL = 10000;
+let anggota=JSON.parse(localStorage.getItem('anggota')||'["Beben","Andi","Sari","Budi","Rina","Joko"]');
+let bayar=JSON.parse(localStorage.getItem('bayar')||'{}');
+let keluarData=JSON.parse(localStorage.getItem('keluarData')||'{}');
+let curBulan=new Date().toISOString().slice(0,7);
+let NOMINAL=10000;
 function save(){localStorage.setItem('anggota',JSON.stringify(anggota));localStorage.setItem('bayar',JSON.stringify(bayar));localStorage.setItem('keluarData',JSON.stringify(keluarData))}
-function parseB(s){let [y,m]=s.split('-').map(Number);return new Date(y,m-1,1)}
+function parseB(s){let[y,m]=s.split('-').map(Number);return new Date(y,m-1,1)}
 function fmtB(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}
 function namaB(d){return d.toLocaleDateString('id-ID',{month:'short',year:'numeric'})}
 let sel=document.getElementById('bulan');for(let y=2023;y<=2026;y++)for(let m=0;m<12;m++){let d=new Date(y,m,1);let v=fmtB(d);let o=document.createElement('option');o.value=v;o.textContent=namaB(d);if(v==curBulan)o.selected=true;sel.appendChild(o)}
 sel.onchange=e=>{curBulan=e.target.value;render()};
 function statusBayar(n){return(bayar[curBulan]||{})[n]||'Belum'}
 function listKeluar(){return keluarData[curBulan]||[]}
-function renderAnggota(){let q=(document.getElementById('cari').value||'').toLowerCase();let f=document.getElementById('filter').value;let list=document.getElementById('aList');list.innerHTML='';anggota.filter(n=>n.toLowerCase().includes(q)).filter(n=>{let s=statusBayar(n);if(f=='Semua')return true;if(f=='Cash')return s=='Cash';if(f=='TF')return s=='TF';if(f=='Belum')return s=='Belum'}).forEach(n=>{let s=statusBayar(n);let c=s=='Cash'?'bg-amber-400 text-black':s=='TF'?'bg-sky-400 text-black':'bg-zinc-700';let div=document.createElement('div');div.className='flex justify-between items-center bg-black border border-[#2a3d35] rounded-xl px-3 py-2';div.innerHTML=`<span class="text-sm">${n}</span><div class="flex gap-2 items-center"><span class="text-[10px] px-2 py-1 rounded-full ${c}">${s}</span><button class="bBtn text-[10px] bg-[#1E2E2A] border border-[#2a3d35] px-2 py-1 rounded-full">Bayar</button><button class="hBtn text-red-400 text-xs">x</button></div>`;div.querySelector('.bBtn').onclick=()=>{let cur=statusBayar(n);let next=cur=='Belum'?'Cash':cur=='Cash'?'TF':'Belum';if(!bayar[curBulan])bayar[curBulan]={};bayar[curBulan][n]=next;save();render()};div.querySelector('.hBtn').onclick=()=>{if(confirm('Hapus '+n+'?')){anggota=anggota.filter(x=>x!=n);save();render()}};list.appendChild(div)})}
-function renderKeluar(){let list=document.getElementById('jList');list.innerHTML='';listKeluar().forEach((e,i)=>{let div=document.createElement('div');div.className='flex justify-between bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-xs';div.innerHTML=`<span>${e.desc} - <b class="text-red-400">Rp ${e.nom.toLocaleString('id-ID')}</b></span><button class="text-red-400">hapus</button>`;div.querySelector('button').onclick=()=>{keluarData[curBulan].splice(i,1);save();render()};list.appendChild(div)})}
-function renderKartu(){let b=bayar[curBulan]||{};let cash=0,tf=0;Object.values(b).forEach(v=>{if(v=='Cash')cash+=NOMINAL;if(v=='TF')tf+=NOMINAL});let masuk=cash+tf;let keluar=listKeluar().reduce((s,e)=>s+e.nom,0);let sisa=masuk-keluar;let prog=anggota.length?Math.round(Object.keys(b).length/anggota.length*100):0;document.getElementById('masuk').textContent='Rp '+masuk.toLocaleString('id-ID');document.getElementById('detail').textContent=`Cash ${cash.toLocaleString('id-ID')} | TF ${tf.toLocaleString('id-ID')}`;document.getElementById('keluar').textContent='Rp '+keluar.toLocaleString('id-ID');document.getElementById('sisa').textContent='Rp '+sisa.toLocaleString('id-ID');document.getElementById('prog').textContent=prog+'%';document.getElementById('bar').style.width=prog+'%';return{masuk,keluar,cash,tf,prog}}
-function renderGrafik(){let cur=parseB(curBulan);let months=[];for(let i=5;i>=0;i--)months.push(new Date(cur.getFullYear(),cur.getMonth()-i,1));let c=document.getElementById('grafik');let ctx=c.getContext('2d');let W=c.width=c.offsetWidth,H=c.height=160;ctx.clearRect(0,0,W,H);let max=1;let data=months.map(m=>{let k=fmtB(m);let b=bayar[k]||{};let cash=0,tf=0;Object.values(b).forEach(v=>{if(v=='Cash')cash+=NOMINAL;if(v=='TF')tf+=NOMINAL});let kel=(keluarData[k]||[]).reduce((s,e)=>s+e.nom,0);max=Math.max(max,cash+tf,kel);return{cash,tf,kel}});let bw=W/months.length*0.45;months.forEach((m,i)=>{let d=data[i];let x=i*(W/months.length)+15;let hc=d.cash/max*(H-30),ht=d.tf/max*(H-30),hk=d.kel/max*(H-30);ctx.fillStyle='#fbbf24';ctx.fillRect(x,H-20-hc,bw,hc);ctx.fillStyle='#38bdf8';ctx.fillRect(x,H-20-hc-ht,bw,ht);ctx.fillStyle='#f87171';ctx.fillRect(x+bw+4,H-20-hk,bw,hk);ctx.fillStyle='#777';ctx.font='10px Poppins';ctx.fillText(m.toLocaleDateString('id-ID',{month:'short'}),x,H-4)});let donut=document.getElementById('donut');let dctx=donut.getContext('2d');dctx.clearRect(0,0,120,120);let p=renderKartu().prog;let ang=p/100*2*Math.PI;dctx.beginPath();dctx.arc(60,60,45,0,2*Math.PI);dctx.strokeStyle='#111';dctx.lineWidth=12;dctx.stroke();dctx.beginPath();dctx.arc(60,60,45,-Math.PI/2,-Math.PI/2+ang);dctx.strokeStyle='#1DB99A';dctx.lineWidth=12;dctx.stroke();document.getElementById('donutT').textContent=p+'%'}
+
+function renderAnggota(){
+let q=(document.getElementById('cari').value||'').toLowerCase();
+let f=document.getElementById('filter').value;
+let list=document.getElementById('aList');list.innerHTML='';
+anggota.filter(n=>n.toLowerCase().includes(q)).filter(n=>{let s=statusBayar(n);if(f=='Semua')return true;if(f=='Cash')return s=='Cash';if(f=='TF')return s=='TF';if(f=='Belum')return s=='Belum'}).forEach(n=>{
+let s=statusBayar(n);
+let div=document.createElement('div');
+div.className='bg-black border border-[#2a3d35] rounded-xl px-3 py-3';
+div.innerHTML=`
+<div class="flex justify-between items-center mb-2">
+<span class="text-xs font-medium">${n}</span>
+<span class="text-[9px] px-2 py-1 rounded-full ${s=='Cash'?'bg-amber-400 text-black':s=='TF'?'bg-sky-400 text-black':'bg-zinc-700 text-zinc-300'}">${s}</span>
+</div>
+<div class="flex gap-2">
+<button class="cashBtn flex-1 py-2 rounded-xl text-[10px] font-bold border ${s=='Cash'?'bg-amber-400 text-black border-amber-400':'bg-transparent text-amber-400 border-amber-400'}">💵 CASH</button>
+<button class="tfBtn flex-1 py-2 rounded-xl text-[10px] font-bold border ${s=='TF'?'bg-sky-400 text-black border-sky-400':'bg-transparent text-sky-400 border-sky-400'}">🏦 TF</button>
+<button class="resetBtn px-3 py-2 rounded-xl text-[10px] bg-zinc-800 text-zinc-400">Reset</button>
+<button class="hBtn px-2 text-red-400 text-xs">x</button>
+</div>
+`;
+div.querySelector('.cashBtn').onclick=()=>{if(!bayar[curBulan])bayar[curBulan]={};bayar[curBulan][n]='Cash';save();render()};
+div.querySelector('.tfBtn').onclick=()=>{if(!bayar[curBulan])bayar[curBulan]={};bayar[curBulan][n]='TF';save();render()};
+div.querySelector('.resetBtn').onclick=()=>{if(bayar[curBulan])delete bayar[curBulan][n];save();render()};
+div.querySelector('.hBtn').onclick=()=>{if(confirm('Hapus '+n+'?')){anggota=anggota.filter(x=>x!=n);save();render()}};
+list.appendChild(div);
+})}
+
+function renderKeluar(){let list=document.getElementById('jList');list.innerHTML='';listKeluar().forEach((e,i)=>{let div=document.createElement('div');div.className='flex justify-between items-center bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-[11px]';div.innerHTML=`<span>${e.desc} - <b class="text-red-400">Rp ${e.nom.toLocaleString('id-ID')}</b></span><button class="text-red-400 text-[10px] border border-red-900 px-2 py-1 rounded-full">hapus</button>`;div.querySelector('button').onclick=()=>{keluarData[curBulan].splice(i,1);save();render()};list.appendChild(div)})}
+function renderKartu(){let b=bayar[curBulan]||{};let cash=0,tf=0;Object.values(b).forEach(v=>{if(v=='Cash')cash+=NOMINAL;if(v=='TF')tf+=NOMINAL});let masuk=cash+tf;let keluar=listKeluar().reduce((s,e)=>s+e.nom,0);let sisa=masuk-keluar;let prog=anggota.length?Math.round(Object.keys(b).length/anggota.length*100):0;document.getElementById('masuk').textContent='Rp '+masuk.toLocaleString('id-ID');document.getElementById('detail').textContent=`Cash ${cash.toLocaleString('id-ID')} | TF ${tf.toLocaleString('id-ID')}`;document.getElementById('keluar').textContent='Rp '+keluar.toLocaleString('id-ID');document.getElementById('sisa').textContent='Rp '+sisa.toLocaleString('id-ID');document.getElementById('prog').textContent=prog+'%';document.getElementById('bar').style.width=prog+'%';return{masuk,keluar,prog}}
+function renderGrafik(){let cur=parseB(curBulan);let months=[];for(let i=5;i>=0;i--)months.push(new Date(cur.getFullYear(),cur.getMonth()-i,1));let c=document.getElementById('grafik');let ctx=c.getContext('2d');let W=c.width=c.offsetWidth,H=c.height=140;ctx.clearRect(0,0,W,H);let max=1;let data=months.map(m=>{let k=fmtB(m);let b=bayar[k]||{};let cash=0,tf=0;Object.values(b).forEach(v=>{if(v=='Cash')cash+=NOMINAL;if(v=='TF')tf+=NOMINAL});let kel=(keluarData[k]||[]).reduce((s,e)=>s+e.nom,0);max=Math.max(max,cash+tf,kel);return{cash,tf,kel}});let bw=W/months.length*0.4;months.forEach((m,i)=>{let d=data[i];let x=i*(W/months.length)+10;let hc=d.cash/max*(H-30),ht=d.tf/max*(H-30),hk=d.kel/max*(H-30);ctx.fillStyle='#fbbf24';ctx.fillRect(x,H-20-hc,bw,hc);ctx.fillStyle='#38bdf8';ctx.fillRect(x,H-20-hc-ht,bw,ht);ctx.fillStyle='#f87171';ctx.fillRect(x+bw+3,H-20-hk,bw,hk);ctx.fillStyle='#777';ctx.font='8px Poppins';ctx.fillText(m.toLocaleDateString('id-ID',{month:'short'}),x,H-4)});let donut=document.getElementById('donut');let dctx=donut.getContext('2d');dctx.clearRect(0,0,80,80);let p=renderKartu().prog;let ang=p/100*2*Math.PI;dctx.beginPath();dctx.arc(40,40,30,0,2*Math.PI);dctx.strokeStyle='#111';dctx.lineWidth=8;dctx.stroke();dctx.beginPath();dctx.arc(40,40,30,-Math.PI/2,-Math.PI/2+ang);dctx.strokeStyle='#1DB99A';dctx.lineWidth=8;dctx.stroke();document.getElementById('donutT').textContent=p+'%'}
 function renderRekap(){let tb=document.getElementById('rekap');tb.innerHTML='';let cur=parseB(curBulan);for(let i=5;i>=0;i--){let d=new Date(cur.getFullYear(),cur.getMonth()-i,1);let k=fmtB(d);let b=bayar[k]||{};let masuk=Object.values(b).filter(v=>v!='Belum').length*NOMINAL;let kel=(keluarData[k]||[]).reduce((s,e)=>s+e.nom,0);let tr=document.createElement('tr');tr.className='border-t border-[#2a3d35]';tr.innerHTML=`<td class="py-2">${namaB(d)}</td><td class="text-right text-emerald-400">Rp ${masuk.toLocaleString('id-ID')}</td><td class="text-right text-red-400">Rp ${kel.toLocaleString('id-ID')}</td><td class="text-right font-bold">Rp ${(masuk-kel).toLocaleString('id-ID')}</td>`;tb.appendChild(tr)}}
 function render(){renderAnggota();renderKeluar();renderKartu();renderGrafik();renderRekap()}
 document.getElementById('cari').oninput=renderAnggota;document.getElementById('filter').onchange=renderAnggota;
