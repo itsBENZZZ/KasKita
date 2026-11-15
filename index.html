@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KasKita 94 - WA Bayar/Belum + Donut</title>
+<title>KasKita.</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <style>*{box-sizing:border-box}body{font-family:Poppins,sans-serif;background:#0F1A14;color:#fff;margin:0;overflow-x:hidden}canvas{display:block;max-width:100%}</style>
@@ -52,7 +52,7 @@
 <div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3"><div class="flex justify-between items-center mb-3 gap-2"><p class="text-xs font-semibold truncate">94 Mahasiswa (✏️ edit, 🗑️ hapus, ✓ sudah) - Klik nama=riwayat</p><button id="aBtn" class="shrink-0 text-[10px] bg-black border border-[#2a3d35] px-3 py-1.5 rounded-full">+ Tambah</button></div><input id="cari" placeholder="Cari..." class="w-full bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-xs mb-2"><select id="filter" class="w-full bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-xs mb-3"><option>Semua</option><option>Cash</option><option>TF</option><option>Belum</option></select><div id="aList" class="space-y-2 max-h-[700px] overflow-auto pr-1"></div></div>
 
 <div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3"><p class="text-xs font-semibold mb-2">Rekap 6 Bulan</p><table class="w-full text-[11px] table-fixed"><thead class="text-zinc-500 text-[10px]"><tr><th class="text-left w-[28%]">Bulan</th><th class="text-right w-[24%]">Masuk</th><th class="text-right w-[24%]">Keluar</th><th class="text-right w-[24%]">Sisa</th></tr></thead><tbody id="rekap"></tbody></table></div>
-<p class="text-center text-[9px] text-zinc-600 mt-6">KasKita 94 | No PIN | WA Bayar/Belum | Donut Pro | 2023-2045 | by Beben</p>
+<p class="text-center text-[9px] text-zinc-600 mt-6">KasKita Dari Kita untuk Kita</p>
 </div>
 
 <div id="modal" class="fixed inset-0 bg-black/70 hidden items-center justify-center p-4 z-50"><div class="bg-[#1E2E2A] border border-[#2a3d35] rounded-2xl p-4 w-full max-w-[340px]"><p class="text-sm font-semibold">Bayar: <span id="modalNama"></span></p><div class="mt-3 grid grid-cols-2 gap-2"><button id="pilihCash" class="py-3 rounded-xl bg-amber-400 text-black font-bold text-xs">💵 CASH</button><button id="pilihTF" class="py-3 rounded-xl bg-sky-400 text-black font-bold text-xs">🏦 TF</button></div><div id="buktiBox" class="mt-3 hidden"><p class="text-[10px] text-zinc-400 mb-1">Bukti TF</p><input id="buktiInput" type="file" accept="image/*" class="w-full text-[10px] bg-black border border-[#2a3d35] rounded-xl p-2"><img id="buktiPrev" class="mt-2 w-full rounded-xl hidden max-h-[150px] object-cover"></div><div class="flex gap-2 mt-3"><button id="pilihReset" class="flex-1 py-2 rounded-xl bg-zinc-800 text-xs">Reset Belum</button><button id="modalClose" class="flex-1 py-2 rounded-xl bg-black border border-[#2a3d35] text-xs">Tutup</button></div></div></div>
