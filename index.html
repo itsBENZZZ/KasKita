@@ -2,7 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>KasKita FIX ALL</title>
+<title>KasKita.</title>
 <script src="https://cdn.tailwindcss.com"></script>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 <script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
@@ -12,7 +12,7 @@
 <body>
 <div class="w-full max-w-[480px] mx-auto px-3 py-3 pb-24">
 <div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] flex justify-between items-center">
-<div class="flex gap-2 items-center min-w-0"><div class="w-8 h-8 bg-[#1DB99A] rounded-xl flex items-center justify-center font-bold text-black">$</div><div class="min-w-0"><h1 class="font-bold text-sm">KasKita FIX <span id="liveDot" style="font-size:9px;background:#333;padding:2px 6px;border-radius:99px;">Menghubungkan...</span></h1><p class="text-[9px] text-zinc-400">anti nge-hang + anti tabrakan</p></div></div>
+<div class="flex gap-2 items-center min-w-0"><div class="w-8 h-8 bg-[#1DB99A] rounded-xl flex items-center justify-center font-bold text-black">$</div><div class="min-w-0"><h1 class="font-bold text-sm">KasKita.<span id="liveDot" style="font-size:9px;background:#333;padding:2px 6px;border-radius:99px;">Menghubungkan...</span></h1><p class="text-[9px] text-zinc-400">dari kita untuk kita</p></div></div>
 <select id="bulan" class="bg-black border border-[#2a3d35] rounded-xl px-2 py-2 text-xs"></select>
 </div>
 <div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35] mt-3">
@@ -20,7 +20,7 @@
 <div class="flex-1"><p class="text-[10px] text-zinc-400">Nominal Bulan Ini</p><div class="flex gap-1 mt-1"><input id="nominalInput" type="number" min="0" class="w-full bg-black border border-[#2a3d35] rounded-xl px-3 py-2 text-xs"><button id="saveNom" class="bg-[#1DB99A] text-black px-3 rounded-xl text-xs font-bold">OK</button></div></div>
 <div class="flex-1"><p class="text-[10px] text-zinc-400">Saldo Awal (Kumulatif)</p><div class="mt-1 bg-black border border-amber-900/30 rounded-xl px-3 py-2 text-xs"><span id="saldoAwalTxt">Rp 0</span></div></div>
 </div>
-<p class="text-[8px] text-zinc-500 mt-2">🟢 Live - Update per-field (anti tabrakan)</p>
+<p class="text-[8px] text-zinc-500 mt-2">🟢 Live</p>
 </div>
 <div class="grid grid-cols-2 gap-2 mt-3">
 <div class="bg-[#1E2E2A] rounded-2xl p-3 border border-[#2a3d35]"><p class="text-[10px] text-zinc-400">Masuk Bulan Ini</p><p id="masuk" class="font-bold text-emerald-400 text-sm truncate">Rp 0</p><p id="detail" class="text-[9px] text-zinc-500 truncate"></p></div>
