@@ -74,18 +74,13 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
-
-// FIX DEKLARASI DI ATAS - ANTI REFERENCE ERROR
 let myName = localStorage.getItem('kaskita_nama') || '';
 let myPresenceRef = null;
 let myPresenceKey = localStorage.getItem('kaskita_presence_key') || null;
-
 const kasRef = db.ref('kaskita/94mahasiswa');
 const presenceRef = db.ref('kaskita/presence');
 const connectedRef = db.ref('.info/connected');
 const devicesRef = db.ref('kaskita/devices');
-
-// DEVICE ID ANTI-BYPASS - SIMPAN DI 2 TEMPAT
 function getDeviceId(){
   let id = localStorage.getItem('kaskita_device_id');
   let cookieMatch = document.cookie.match(/kaskita_device_id=([^;]+)/);
@@ -100,14 +95,12 @@ function getDeviceId(){
   return id;
 }
 let deviceId = getDeviceId();
-
 devicesRef.child(deviceId).on('value',(snap)=>{
   let d=snap.val();
   if(d&&d.blacklisted){
     document.body.innerHTML='<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;background:#0F1A14;color:#fff;font-family:Poppins;padding:20px;text-align:center"><div><h1 style="font-size:24px;font-weight:bold;color:#ef4444">🚫 AKSES DIBLOKIR</h1><p style="margin-top:10px;font-size:13px;color:#999">Device kamu di blacklist sama Beben</p><p style="margin-top:5px;font-size:10px;color:#555">ID: '+deviceId+'</p><p style="margin-top:10px;font-size:11px">Hubungi Beben buat dibuka</p></div></div>';
   }
 });
-
 function registerDevice(name){
   devicesRef.child(deviceId).once('value').then(snap=>{
     let old=snap.val();
@@ -120,7 +113,6 @@ function registerDevice(name){
   devicesRef.child(deviceId).onDisconnect().update({lastSeen:Date.now()});
 }
 setInterval(()=>{if(myName) devicesRef.child(deviceId).update({lastSeen:Date.now(),name:myName});},30000);
-
 const CORRECT_PIN = "12344321";
 let pinPassed = localStorage.getItem('kaskita_pin_ok') === 'true';
 function checkPin(){
@@ -150,18 +142,14 @@ document.getElementById('pinOkBtn').onclick=()=>{
 };
 document.getElementById('pinInput').onkeydown=(e)=>{ if(e.key==='Enter') document.getElementById('pinOkBtn').click(); };
 checkPin();
-
-// FIX PRESENCE ANTI DOBEL
 function setupPresence(name){
   myName = name;
   localStorage.setItem('kaskita_nama', name);
   registerDevice(name);
   document.getElementById('namaModal').style.display='none';
-  
   if(myPresenceKey){
     presenceRef.child(myPresenceKey).remove().catch(()=>{});
   }
-
   connectedRef.off();
   connectedRef.on('value', (snap)=>{
     if(snap.val() === true){
@@ -176,7 +164,6 @@ function setupPresence(name){
     }
   });
 }
-
 if(pinPassed){
   if(myName){
     document.getElementById('namaModal').style.display='none';
@@ -206,21 +193,23 @@ presenceRef.on('value', (snap)=>{
   });
   if(uniq.length===0) listEl.innerHTML='<span class="text-[9px] text-zinc-500">Belum ada yang online</span>';
 });
-
 const DEFAULT_94 = ["ADITYA GERARDI SUDRAJAT","AGUS","AHMAD ILHAM","ALFIAN RAYHANSYAH","ALGY AHADIAREZA","ALIKIA ZAKIA","ANGGA INDRA RAMADAN","ARIVIARANI SYAFA GAYATRI","ARYA PUTRA PUTRA HAKIM","ASEP SUKARYA","ASEP ZIDAN BUKHORI","ATHAYA SABIAN ZAKI","AZNI NUR ISNA","BERNADUS WIDI NUGROHO","CHRISTIANO ANUGERAH","DAFFA DHIYA ULHAQ","DAVID ALVILA","ELZA SEPTIANI PUTRI","ERRO AN FARE RAMADO MAYDA NUGROHO","ESA AMALADINA SAPUTRA","EZAR RAHMATULLAH SUGIRI","FAADHILAH SYADZWANA","FADILLA ZUHRO","FAISAL RIZKY ADITYA","FAJAR RAMADHAN","FARID DIANSYAH","FATIH FADHLULLAH","FAUZIAH NUR FADILLAH","FEBRIO SATRIA NUGROHO","GABRIEL SINA DOREN","GITHSA ASTYLA","HABI NURRAHMAN","HADI FAUZAN AL HABBY","HASBY ASSIDDIEQY","HIKARI JIBRIELSH AL ATHA","HILMAN RUSYAD","HUDIAT","IQBAL FAUZAN","JHON BOSCO EGNASIUS LAORENS","JINGGA DIMASEKA SADURRANDO","KAILA ANARGHIA HUSEN","KAINDRA AZYIEL SONJAYA","KHALIDYATUL RIZKY","LUTHFI ABDUL MALIK AL FAIQ","M. BINTANG AFLIANSYAH AFROZI","MAGDALENA OCTAFIANI SINAGA","MAULANA YUSUF FATAHILAH","MOCH N AFZANDRA","MOHAMMAD NURHIDAYAT ALAMSYAH","MUH ALLEN YUTONIO","MUHAMAD ARYA JAMIL","MUHAMAD DHEKIA ALFARIDZA","MUHAMAD SADAM SISWANTO","MUHAMMAD AFZAL FAHRIANA","MUHAMMAD ANDRE","MUHAMMAD FAJRIAN HIDAYATULLAH","MUHAMMAD FARHAN","MUHAMMAD GEVI JULIANDA","MUHAMMAD RAFIF RIZQULLAH","MUHAMMAD SALMAN AL FARISI","NADA WAFIQ ASHAFA","NANDA AMELIA PUTRI","NANDHIKA DIEGA PRATAMA","NAUFAL IBNU HANIF","NIKO ALVIN","NOVA","NOVIAN PRATMOJO","NUR SAHARA","OMAR TERRY PUTRA","PAJAR SIDIK","PINGKA SALEEMAH PINGKA","RACHEL LINGZA","RAFFY NASYEH KHUDIN","RAFIQ AHMAD NAUFAL","RANGGA FERDIANA","RIADI FASEH NURZAMAN","RIFA NAILA LUQYANA","RIZKY HENDRIAN","ROHIM NURHAYAT","ROIHAN NURDIKA YUSUF","RUBENSTEIN ELBERT MANALU","RULLY AMELIA","SABIL ALBAIHAQI","SAIFUL JAMIL","SALWA ALIKHA","SINGGAH SINDUDHARMA","SUHADA AHMAD DINULLAH","SUKMA AYU","SULHAN MUHAMMAD RIZKI","SYAMILA KHAIRIYA","TIARA ALIFA HARRYATUL","VICY SALMA VATYA ANJANI","WULANDARI SELVI SOVIANA","ZAYYINI DZIKRI AMRULLOH"];
 let anggota=DEFAULT_94;
 let bayar={};let keluarData={};let nominalData={};
 let curBulan="2026-10";
 let curNama=null;
-let isSyncing=false;
+let isSaving=false;
 function showToast(msg){
   let t=document.getElementById('toast');
   t.textContent=msg; t.style.display='block';
   setTimeout(()=>t.style.display='none',2500);
 }
 function save(){
-  if(isSyncing) return;
-  kasRef.set({anggota,bayar,keluarData,nominalData,updatedAt:Date.now()});
+  kasRef.set({anggota,bayar,keluarData,nominalData,updatedAt:Date.now()}).catch(e=>{
+    console.error(e);
+    showToast('❌ Gagal save: '+e.message);
+    isSaving=false;
+  });
 }
 kasRef.on('value',(snap)=>{
   let data=snap.val();
@@ -229,14 +218,12 @@ kasRef.on('value',(snap)=>{
     document.getElementById('liveDot').textContent='🟢 Live';
     return;
   }
-  isSyncing=true;
   anggota=data.anggota||DEFAULT_94;
   bayar=data.bayar||{};
   keluarData=data.keluarData||{};
   nominalData=data.nominalData||{};
   document.getElementById('liveDot').textContent='🟢 Live Terhubung';
   render();
-  isSyncing=false;
 });
 kasRef.on('child_changed',()=>{showToast('🔄 Update dari bendahara lain!');});
 function fmtB(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')}function parseB(s){let[y,m]=s.split('-').map(Number);return new Date(y,m-1,1)}function namaB(d){return d.toLocaleDateString('id-ID',{month:'short',year:'numeric'})}function getNom(){return nominalData[curBulan]||10000}
@@ -263,11 +250,34 @@ document.getElementById('waSudahBtn').onclick=()=>{let b=bayar[curBulan]||{};let
 document.getElementById('waBelumBtn').onclick=()=>{let b=bayar[curBulan]||{};let belum=anggota.filter(n=>!b[n]);let txt=`*❌ BELUM BAYAR - ${namaB(parseB(curBulan))}*\nNominal: Rp ${getNom().toLocaleString('id-ID')}\n\n${belum.map((n,i)=>`${i+1}. ${n}`).join('\n')}`;window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank')};
 document.getElementById('waBtn').onclick=()=>{let r=renderKartu();let txt=`*📊 REKAP KAS - ${namaB(parseB(curBulan))}*\nSaldo Awal: Rp ${r.saldoAwal.toLocaleString('id-ID')}\nMasuk: Rp ${r.masuk.toLocaleString('id-ID')}\nKeluar: Rp ${r.keluar.toLocaleString('id-ID')}\nSisa: Rp ${r.sisa.toLocaleString('id-ID')}\nTOTAL Okt26-Des35: Rp ${r.tot.totalSisa.toLocaleString('id-ID')}`;window.open('https://wa.me/?text='+encodeURIComponent(txt),'_blank')};
 document.getElementById('csvBtn').onclick=()=>{let csv='Bulan,Anggota,Status,Nominal\n';for(let k in bayar){for(let n in bayar[k]){csv+=`${k},${n},${bayar[k][n]},${nominalData[k]||10000}\n`}}let blob=new Blob([csv],{type:'text/csv'});let a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='kas-okt2026-2035.csv';a.click()};
-function closeModal(){document.getElementById('modal').classList.add('hidden');document.getElementById('modal').classList.remove('flex')}
+function closeModal(){document.getElementById('modal').classList.add('hidden');document.getElementById('modal').classList.remove('flex'); isSaving=false;}
 document.getElementById('modalClose').onclick=closeModal;document.getElementById('modal').onclick=e=>{if(e.target.id=='modal')closeModal()};
-document.getElementById('pilihCash').onclick=()=>{if(!bayar[curBulan])bayar[curBulan]={};bayar[curBulan][curNama]='Cash';save();closeModal()};
-document.getElementById('pilihTF').onclick=()=>{if(!bayar[curBulan])bayar[curBulan]={};bayar[curBulan][curNama]='TF';save();closeModal()};
-document.getElementById('pilihReset').onclick=()=>{if(bayar[curBulan])delete bayar[curBulan][curNama];save();closeModal()};
+document.getElementById('pilihCash').onclick=()=>{
+  if(isSaving) return;
+  isSaving=true;
+  if(!bayar[curBulan])bayar[curBulan]={};
+  bayar[curBulan][curNama]='Cash';
+  save();
+  showToast('✅ '+curNama+' CASH');
+  closeModal();
+};
+document.getElementById('pilihTF').onclick=()=>{
+  if(isSaving) return;
+  isSaving=true;
+  if(!bayar[curBulan])bayar[curBulan]={};
+  bayar[curBulan][curNama]='TF';
+  save();
+  showToast('✅ '+curNama+' TF');
+  closeModal();
+};
+document.getElementById('pilihReset').onclick=()=>{
+  if(isSaving) return;
+  isSaving=true;
+  if(bayar[curBulan])delete bayar[curBulan][curNama];
+  save();
+  showToast('🔄 Reset '+curNama);
+  closeModal();
+};
 document.getElementById('qrBtn').onclick=()=>{document.getElementById('qrModal').classList.remove('hidden');document.getElementById('qrModal').classList.add('flex')};
 document.getElementById('qrClose').onclick=()=>{document.getElementById('qrModal').classList.add('hidden');document.getElementById('qrModal').classList.remove('flex')};
 render();
